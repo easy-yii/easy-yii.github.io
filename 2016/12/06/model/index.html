@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Head tag -->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="hacking-with-yii2">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="缘莲度">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="hacking-with-yii2"/>
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="hacking-with-yii2" />
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="hacking-with-yii2"/>
+  <!--Type page-->
+  
+      <meta property="og:type" content="website" />
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>hacking-with-yii2</title>
+
+
+  <link rel="shortcut icon" href="https://static.hinpc.com/image/2016/20160807-hi-logo.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+        <img src="https://avatars3.githubusercontent.com/u/23000895?v=3&s=200" alt="hacking-with-yii2" height="60">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            Untitled
+            
+          </h1>
+          <p class="posted-on">
+          2016-12-06
+          </p>
+          <div class="tags-links">
+            
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content">
+          <hr>
+<p>title: model<br>date: 2016-12-06 10:23:04</p>
+<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>MVC设计模式是一个经典的设计模式。大多数框架都已mvc为基本架构。Model主要负责处理数据，可以理解为与数据库打交道。<br>Controller，主要处理view传来的请求，向model请求数据，并将请求的数据传给view。View,主要将用户所需的请求传给控制器、接收controller传来的数据，并在页面内渲染。<br>按照本人的理解，M负责数据，C负责业务逻辑，V负责页面交互。</p>
+<p>这一节内容，通过一个简单的场景(博客)来主要梳理yii2框架的模型，重点说CURD操作(即create、update、read、delete)和关联模型，并会简单的说下控制器。</p>
+<p>本文依旧先梳理思路，掌握整体结构，再一个个梳理知识点，建议结合文档看，list部分重点列举了用法，部分解释不清楚的参考文档。</p>
+<ul>
+<li><a href="http://www.yiichina.com/doc/guide/2.0/db-query-builder" target="_blank" rel="external">查询构建器</a></li>
+<li><a href="http://www.yiichina.com/doc/guide/2.0/db-active-record" target="_blank" rel="external">活动纪录</a></li>
+</ul>
+<h2 id="One-Steps"><a href="#One-Steps" class="headerlink" title="One:Steps"></a>One:Steps</h2><h3 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h3><p>一个博客需要作者和文章内容。作者可以在后台管理自己的文章内容(增删改查)，用户可以在前台看到作者的文章和并对文章评论。</p>
+<h3 id="step-one-tables"><a href="#step-one-tables" class="headerlink" title="step one tables"></a>step one tables</h3><p>简单的分析以下需求，我们建立的数据库如下。大家可利用上一节学习的内容，使用迁移来建立自己的数据库。记得修改相关数据库配置。</p>
+<p><strong>用户表user</strong></p>
+<table>
+<thead>
+<tr>
+<th>Columns</th>
+<th>Type</th>
+<th>Length</th>
+<th>Allow Null</th>
+<th>Default</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int</td>
+<td>11</td>
+<td>no</td>
+<td></td>
+<td>用户id</td>
+</tr>
+<tr>
+<td>username</td>
+<td>varchar</td>
+<td>255</td>
+<td>no</td>
+<td></td>
+<td>用户名</td>
+</tr>
+<tr>
+<td>password</td>
+<td>varchar</td>
+<td>255</td>
+<td>no</td>
+<td></td>
+<td>密码</td>
+</tr>
+<tr>
+<td>group</td>
+<td>int</td>
+<td>3</td>
+<td>no</td>
+<td>1</td>
+<td>分组</td>
+</tr>
+<tr>
+<td>email</td>
+<td>varchar</td>
+<td>255</td>
+<td>no</td>
+<td></td>
+<td>邮箱</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>bigint</td>
+<td>20</td>
+<td>no</td>
+<td></td>
+<td>创建时间</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>bigint</td>
+<td>20</td>
+<td>yes</td>
+<td></td>
+<td>更新时间</td>
+</tr>
+</tbody>
+</table>
+<p><strong>文章表post</strong> </p>
+<table>
+<thead>
+<tr>
+<th>Columns</th>
+<th>Type</th>
+<th>Length</th>
+<th>Allow Nul</th>
+<th>Default</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int</td>
+<td>11</td>
+<td>no</td>
+<td></td>
+<td>文章id</td>
+</tr>
+<tr>
+<td>author_id</td>
+<td>int</td>
+<td>11</td>
+<td>no</td>
+<td></td>
+<td>作者id</td>
+</tr>
+<tr>
+<td>title</td>
+<td>varchar</td>
+<td>255</td>
+<td>no</td>
+<td></td>
+<td>文章标题</td>
+</tr>
+<tr>
+<td>body</td>
+<td>text</td>
+<td></td>
+<td>no</td>
+<td></td>
+<td>文章内容</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>bigint</td>
+<td>20</td>
+<td>no</td>
+<td></td>
+<td>创建时间</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>bigint</td>
+<td>20</td>
+<td>yes</td>
+<td></td>
+<td>更新时间</td>
+</tr>
+<tr>
+<td>deleted_at</td>
+<td>bigint</td>
+<td>20</td>
+<td>yes</td>
+<td></td>
+<td>删除时间</td>
+</tr>
+</tbody>
+</table>
+<p><strong>评论表comment</strong></p>
+<table>
+<thead>
+<tr>
+<th>Columns</th>
+<th>Type</th>
+<th>Length</th>
+<th>Allow Nul</th>
+<th>Default</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int</td>
+<td>11</td>
+<td>no</td>
+<td></td>
+<td>评论id</td>
+</tr>
+<tr>
+<td>title_id</td>
+<td>int</td>
+<td>11</td>
+<td>no</td>
+<td></td>
+<td>评论的文章id</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>int</td>
+<td>11</td>
+<td>no</td>
+<td></td>
+<td>用户id</td>
+</tr>
+<tr>
+<td>content</td>
+<td>text</td>
+<td></td>
+<td>no</td>
+<td></td>
+<td>内容</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>bigint</td>
+<td>20</td>
+<td>no</td>
+<td></td>
+<td>创建时间</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>bigint</td>
+<td>20</td>
+<td>yes</td>
+<td></td>
+<td>更新时间</td>
+</tr>
+<tr>
+<td>deleted_at</td>
+<td>bigint</td>
+<td>20</td>
+<td>yes</td>
+<td></td>
+<td>删除时间</td>
+</tr>
+</tbody>
+</table>
+<h3 id="steps-two-建立model"><a href="#steps-two-建立model" class="headerlink" title="steps two 建立model"></a>steps two 建立model</h3><p>yii有很多类型的model，我们简单的了解下。</p>
+<p><code>yii\base\Model</code>,是基本模型,一般情况下会用来处理用户模型操作。它有很多子类。<br>比如<code>yii\db\ActiveRecord</code>,这也是我们经常用的高级模型类，进行相关数据库操作，当然它也具备<code>yii\base\Model</code>所有功能。大多数情况我们主要使用此高级模型类。</p>
+<p>想了解更多，可以点击连接。<a href="http://www.yiiframework.com/doc-2.0/yii-base-model.html" target="_blank" rel="external">yii\base\Model-api</a></p>
+<p><code>bankend</code>和<code>frontend</code>都可以继承<code>common\models\Post.php</code>，并把公共部分代码放置于这个文件。具体代码如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">&lt;?php</div><div class="line"></div><div class="line">namespace common\models;</div><div class="line"></div><div class="line">use yii\db\ActiveRecord;</div><div class="line">use yii\behaviors\TimestampBehavior;</div><div class="line"></div><div class="line">class Post extends ActiveRecord</div><div class="line">&#123;</div><div class="line"></div><div class="line">//关联表名</div><div class="line">	public static function tableName()</div><div class="line">	&#123;</div><div class="line">		return &apos;post&apos;;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">//事件，创建更新，可自动对时间赋值，默认字段是，created_at updated_at</div><div class="line">	public function behaviors() &#123;</div><div class="line">		return [</div><div class="line">			TimestampBehavior::className(),</div><div class="line">		];</div><div class="line">	&#125;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>backend\models\Post</code>继承<code>common\models\Post</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div></pre></td><td class="code"><pre><div class="line">&lt;?php</div><div class="line">namespace backend\models;</div><div class="line"></div><div class="line">use Yii;</div><div class="line">use common\models\Post as BasePost;</div><div class="line"></div><div class="line">class Post extends BasePost</div><div class="line">&#123;</div><div class="line"></div><div class="line">	public function rules()</div><div class="line">	&#123;</div><div class="line">		return [</div><div class="line">			[[&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;], &apos;required&apos;],</div><div class="line">		];</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public function __construct()</div><div class="line">	&#123;</div><div class="line">		$post = Yii::$app-&gt;request-&gt;post();//获取post请求传来的参数</div><div class="line">		$this-&gt;load([&apos;Post&apos; =&gt; $post]);//通过load为字段赋值</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	/**</div><div class="line">	 * @return bool</div><div class="line">	 * 创建一篇文章</div><div class="line">	 */</div><div class="line">	public function postCreate()</div><div class="line">	&#123;</div><div class="line">		/*$post = new self();</div><div class="line">		$post-&gt;author_id = $post[&apos;author_id&apos;];</div><div class="line">		$post-&gt;title = $post[&apos;title&apos;];</div><div class="line">		$post-&gt;body = $post[&apos;body&apos;];*/</div><div class="line">		return $this-&gt;save();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	/**</div><div class="line">	 * @param $id</div><div class="line">	 * @return bool</div><div class="line">	 * 更新某篇文章</div><div class="line">	 */</div><div class="line">	public function postUpdate($id)</div><div class="line">	&#123;</div><div class="line"></div><div class="line">		$post = self::findPostById($id);</div><div class="line">		foreach ($this-&gt;attributes as $key =&gt; $value) &#123;</div><div class="line">			$post-&gt;$key = $value ? :$post-&gt;$key;</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		return $post-&gt;save();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	/**</div><div class="line">	 * @param $id</div><div class="line">	 * @return bool</div><div class="line">	 * 删除某篇文章</div><div class="line">	 */</div><div class="line">	public function postDelete($id)</div><div class="line">	&#123;</div><div class="line">		$post = self::findPostById($id);</div><div class="line">		//$post-&gt;delete();</div><div class="line">		$post-&gt;deleted_at = time();</div><div class="line">		return $post-&gt;save();</div><div class="line"> 	&#125;</div><div class="line"></div><div class="line">	/**</div><div class="line">	 * @param $id</div><div class="line">	 * @return static</div><div class="line">	 * 根据id返回某篇文章</div><div class="line">	 */</div><div class="line">	public static function findPostById($id)</div><div class="line">	&#123;</div><div class="line">		return Post::findOne([&apos;id&apos; =&gt; $id]);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	/**</div><div class="line">	 * @return array|\yii\db\ActiveRecord[]</div><div class="line">	 * 返回未删除的文章并倒序排列</div><div class="line">	 */</div><div class="line">	public static function postList()</div><div class="line">	&#123;</div><div class="line">		return self::find()-&gt;where([&apos;deleted_at&apos;=&gt;null])-&gt;orderBy(&apos;id desc&apos;)-&gt;asArray()-&gt;all();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="steps-three-建立controller"><a href="#steps-three-建立controller" class="headerlink" title="steps three 建立controller"></a>steps three 建立controller</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">&lt;?php</div><div class="line">/**</div><div class="line"> * Created by PhpStorm.</div><div class="line"> * User: yuan</div><div class="line"> * Date: 16/10/31</div><div class="line"> * Time: 14:54</div><div class="line"> */</div><div class="line"></div><div class="line">namespace backend\controllers;</div><div class="line"></div><div class="line">use Yii;</div><div class="line">use yii\base\Controller;</div><div class="line">use backend\models\Post;</div><div class="line">use yii\db\Query;</div><div class="line"></div><div class="line">class PostController extends Controller</div><div class="line">&#123;</div><div class="line"></div><div class="line"></div><div class="line">	public function actionIndex()</div><div class="line">	&#123;</div><div class="line">		var_dump(Post::postList());</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public function actionView() &#123;</div><div class="line">		$id = Yii::$app-&gt;request-&gt;get(&apos;id&apos;);</div><div class="line">		var_dump(Post::findPostById($id)-&gt;attributes);die();</div><div class="line">	&#125;</div><div class="line">	public function actionCreate()</div><div class="line">	&#123;</div><div class="line">		$post = new Post();</div><div class="line">		var_dump($post-&gt;postCreate());</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public function actionUpdate()</div><div class="line">	&#123;</div><div class="line">		$id = Yii::$app-&gt;request-&gt;get(&apos;id&apos;);</div><div class="line">		$post = new Post();</div><div class="line">		var_dump($post-&gt;postUpdate($id));</div><div class="line">	&#125;</div><div class="line"></div><div class="line"></div><div class="line">	public function actionDelete()</div><div class="line">	&#123;</div><div class="line">        $id =  Yii::$app-&gt;request-&gt;get(&apos;id&apos;);</div><div class="line">        var_dump(Post::postDelete($id));</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="steps-four-调试"><a href="#steps-four-调试" class="headerlink" title="steps four 调试"></a>steps four 调试</h3><p>推荐postman调试接口</p>
+<h2 id="Two-List"><a href="#Two-List" class="headerlink" title="Two: List"></a>Two: List</h2><h3 id="关联表"><a href="#关联表" class="headerlink" title="关联表"></a>关联表</h3><h3 id="create"><a href="#create" class="headerlink" title="create"></a>create</h3><h3 id="update"><a href="#update" class="headerlink" title="update"></a>update</h3><h3 id="delete"><a href="#delete" class="headerlink" title="delete"></a>delete</h3><h3 id="find"><a href="#find" class="headerlink" title="find"></a>find</h3><ul>
+<li>返回所有数据<code>$post = Post::find()-&gt;all();</code></li>
+<li>返回一条author_id的数据：<code>$post = Post::find()-&gt;where([&#39;author_id&#39;=&gt;1])-&gt;one();</code></li>
+<li>计算author_id为1的纪录条数总和：<code>$post = Post::find()-&gt;where([&#39;author_id&#39;=&gt;1])-&gt;count();</code></li>
+<li>以author_id为索引结果集，出现多条author_id相同的只会保留其中一条纪录返回：<code>$post = Post::find()-&gt;indexBy(&#39;author_id&#39;)-&gt;all();</code></li>
+<li>用原生sql检索：<code>$sql = &#39;select * from post&#39;;$post = Post::findBySql($sql)-&gt;asArray()-&gt;all();</code></li>
+<li>用原生sql检索：<code>$sql = &#39;select * from post&#39;;$post = Post::findBySql($sql)-&gt;asArray()-&gt;one();</code></li>
+<li>返回一条id为1的纪录：<code>$post = Post::findOne(1);</code></li>
+<li>返回一条id为1且author_id为1的纪录：<code>$post = Post::findOne([&#39;id&#39;=&gt;1,&#39;author_id&#39;=&gt;1]);</code></li>
+<li>返回id为1、2、3的所有纪录，不能与<code>asArray()</code>组合：<code>$post = Post::findAll([1,2,3]);</code></li>
+<li>返回author_id为1的所有纪录，不能与<code>asArray()</code>组合：<code>$post = Post::findAll([&#39;author_id&#39;=&gt;1]);</code></li>
+</ul>
+<h4 id="select"><a href="#select" class="headerlink" title="select"></a>select</h4><ul>
+<li>返回所有纪录，但只返回id、author_id、title、bod字段：<code>$post = Post::find()-&gt;select([&#39;id&#39;,&#39;author_id&#39;, &#39;title&#39;, &#39;body&#39;])-&gt;all();</code></li>
+<li>指定别名:</li>
+<li>addSelect:</li>
+</ul>
+<h4 id="asArray"><a href="#asArray" class="headerlink" title="asArray"></a>asArray</h4><p>以数组形式返回：<br><code>$post = Post::find()-&gt;select([&#39;id&#39;,&#39;author_id&#39;, &#39;title&#39;, &#39;body&#39;])-&gt;asArray()-&gt;all();</code></p>
+<h4 id="distinct"><a href="#distinct" class="headerlink" title="distinct"></a>distinct</h4><p>以数组形式返回所有的author_id，并去除重复的author_id：<code>$post = Post::find()-&gt;select(&#39;author_id&#39;)-&gt;distinct()-&gt;asArray()-&gt;all()</code></p>
+<h4 id="where"><a href="#where" class="headerlink" title="where"></a>where</h4><p>操作where的三种格式：</p>
+<ul>
+<li>字符串格式，例如：’status=1’: <ul>
+<li><code>$post = Post::find()-&gt;select([&#39;id&#39;,&#39;author_id&#39;, &#39;title&#39;, &#39;body&#39;])-&gt;where(&#39;author_id = 1&#39;)-&gt;asArray()-&gt;all();</code></li>
+<li><code>$post = Post::find()-&gt;select([&#39;id&#39;,&#39;author_id&#39;, &#39;title&#39;, &#39;body&#39;])-&gt;where(&#39;author_id = :user_id&#39;,[&#39;:user_id&#39;=&gt;1])-&gt;asArray()-&gt;all();</code></li>
+</ul>
+</li>
+<li>哈希格式，例如： [‘status’ =&gt; 1, ‘type’ =&gt; 2]: <code>$post = Post::find()-&gt;select([&#39;id&#39;,&#39;author_id&#39;, &#39;title&#39;, &#39;body&#39;])-&gt;where([&#39;author_id&#39;=&gt;1,&#39;title&#39;=&gt;&#39;title1&#39;])-&gt;asArray()-&gt;all();</code></li>
+<li>操作符格式，例如：[‘like’, ‘name’, ‘test’]，如下：</li>
+</ul>
+<p><strong>and</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;and&apos;, &apos;author_id=1&apos;, [&apos;or&apos;, &quot;title=&apos;title1&apos;&quot;, &quot;title=&apos;title3&apos;&quot;]])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>or</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;or&apos;, &quot;title=&apos;title1&apos;&quot;, &quot;title=&apos;title3&apos;&quot;])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>between</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;between&apos;,&apos;author_id&apos;,1,8])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>not between</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;not between&apos;,&apos;author_id&apos;,1,8])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>in</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;in&apos;,&apos;id&apos;,[1,2,3]])</div><div class="line">			-&gt;asArray()-&gt;all();</div><div class="line">或</div><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;id&apos; =&gt; [1,2,3,4,5,6]])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>not in</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;not in&apos;,&apos;id&apos;,[1,2,3,4,5,6,7,8]])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>like</strong>:模糊查询<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//返回字段body中有`body`和`update`的所有纪录</div><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;like&apos;,&apos;body&apos;,[&apos;body&apos;,&apos;update&apos;]])</div><div class="line">			-&gt;asArray()-&gt;all();</div><div class="line">			</div><div class="line">或</div><div class="line"></div><div class="line">//返回字段body中有`body`的所有纪录</div><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;like&apos;,&apos;body&apos;,&apos;body&apos;,])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>or like</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//返回字段title有`1`或`2`的所有纪录</div><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;or like&apos;,&apos;title&apos;,[&apos;1&apos;,&apos;3&apos;]])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>not like</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//不要返回字段title有`1`或`2`的所有纪录</div><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;not like&apos;,&apos;title&apos;,[&apos;1&apos;,&apos;2&apos;]])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>or not like</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//不要返回字段title中有9和title的所有纪录</div><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;or not like&apos;,&apos;title&apos;,[&apos;9&apos;,&apos;title&apos;]])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>&gt;,&gt;=,&lt;,&lt;=</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">//author_id小于3的所有纪录</div><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;&lt;&apos;,&apos;author_id&apos;,3])</div><div class="line">			-&gt;asArray()-&gt;all();</div><div class="line"></div><div class="line">//author_id大于等于3的所有纪录</div><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where([&apos;&gt;=&apos;,&apos;author_id&apos;,3])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure></p>
+<p><strong>exists</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//如果存在author_id 为2的数据，返回所有的纪录</div><div class="line">$query = Post::find()-&gt;where([&apos;author_id&apos;=&gt;2]);</div><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where( [&apos;exists&apos;,$query])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure>
+<p><strong>not exists</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//如果不存在author_id 为2的数据，返回所有的纪录</div><div class="line">$query = Post::find()-&gt;where([&apos;author_id&apos;=&gt;2]);</div><div class="line">$post = Post::find()-&gt;select([&apos;id&apos;,&apos;author_id&apos;, &apos;title&apos;, &apos;body&apos;])</div><div class="line">			-&gt;where( [&apos;exists&apos;,$query])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure>
+<h4 id="orderBy-排序"><a href="#orderBy-排序" class="headerlink" title="orderBy:排序"></a>orderBy:排序</h4><p><code>$post = Post::find()-&gt;orderBy([&#39;id&#39; =&gt; SORT_ASC, &#39;author_id&#39; =&gt; SORT_DESC,])-&gt;all();</code><br><code>$post = Post::find()-&gt;orderBy(&#39;id ASC, author_id DESC&#39;)-&gt;all();</code><br><code>$post = Post::find()-&gt;orderBy(&#39;id ASC&#39;)-&gt;addOrderBy(&#39;author_id DESC&#39;)-&gt;all();</code></p>
+<h4 id="having"><a href="#having" class="headerlink" title="having"></a>having</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//查找body字段中有update的纪录，并计算所有该作者的文章总和</div><div class="line">$post = Post::find()</div><div class="line">		    -&gt;select([&apos;COUNT(*) AS count&apos;,&apos;author_id&apos;,&apos;body&apos;])</div><div class="line">			-&gt;having([&apos;like&apos;,&apos;body&apos;,&apos;update&apos;])</div><div class="line">			-&gt;groupBy(&apos;author_id&apos;)</div><div class="line">			-&gt;asArray()</div><div class="line">			-&gt;all();</div></pre></td></tr></table></figure>
+<h4 id="groupBy"><a href="#groupBy" class="headerlink" title="groupBy"></a>groupBy</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//按照author_id分组并计算每组总和,只打印计数总和、author_id</div><div class="line">$post = Post::find()</div><div class="line">		    -&gt;select([&apos;COUNT(*) AS count&apos;,&apos;author_id&apos;])</div><div class="line">			-&gt;groupBy(&apos;author_id&apos;)</div><div class="line">			-&gt;asArray()</div><div class="line">			-&gt;all();</div></pre></td></tr></table></figure>
+<p>Question:<br><code>$post = Post::find()-&gt;groupBy(&#39;author_id&#39;)-&gt;asArray()-&gt;all();</code>，打印结果没有分组效果？？？？？？</p>
+<p>判断id为2的纪录是否存在，存在返回true，不存在返回false：<br><code>$post = Post::find()-&gt;where( [ &#39;id&#39; =&gt; 2 ] )-&gt;exists();</code></p>
+<h4 id="addXXX"><a href="#addXXX" class="headerlink" title="addXXX()"></a>addXXX()</h4><p>addXXX()，这种写法，一般作为条件补充。用法不多说，同上。</p>
+<ul>
+<li>addHaving()</li>
+<li>addSelect()</li>
+<li>addParams()</li>
+<li>addOrderBy()</li>
+<li>addGroupBy()</li>
+</ul>
+<h4 id="filterWhere"><a href="#filterWhere" class="headerlink" title="filterWhere"></a>filterWhere</h4><p>过滤用户输入的空值,比如用户登陆时输入的用户名或者email，如果值为空，则默认不作为查询条件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">User::find()-&gt;filterWhere([</div><div class="line">    &apos;username&apos; =&gt; $username,</div><div class="line">    &apos;email&apos; =&gt; $email,		</div><div class="line">]);</div></pre></td></tr></table></figure>
+<h4 id="andFilterCompare-‘column-name’-’value’-’-defaultOperator-‘-’-‘"><a href="#andFilterCompare-‘column-name’-’value’-’-defaultOperator-‘-’-‘" class="headerlink" title="andFilterCompare(‘column_name’,’value’,’$defaultOperator = ‘=’ ‘)"></a>andFilterCompare(‘column_name’,’value’,’$defaultOperator = ‘=’ ‘)</h4><p>为特定列添加过滤条件，并允许用户选择过滤器运算符.如<code>&lt;</code>,<code>&gt;</code>,<code>&gt;=</code>,<code>&lt;=</code>,<code>&lt;&gt;</code>,<code>=</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$post = Post::find()</div><div class="line">	-&gt;andFilterCompare(&apos;author_id&apos;,&apos;4&apos;,&apos;&lt;&apos;)</div><div class="line">	-&gt;asArray()</div><div class="line">	-&gt;all();</div></pre></td></tr></table></figure>
+<h4 id="limit-offset"><a href="#limit-offset" class="headerlink" title="limit  offset"></a>limit  offset</h4><p>limit 限制返回的条数，可以用空值或者负值禁用。</p>
+<p>offset 比如返回10条数据，偏移量为3，则会返回后面7条数据.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$post = Post::find()</div><div class="line">    -&gt;select([&apos;id&apos;,&apos;author_id&apos;,&apos;body&apos;])</div><div class="line">	-&gt;andFilterCompare(&apos;author_id&apos;,&apos;4&apos;,&apos;&lt;&apos;)</div><div class="line">	-&gt;limit(3)</div><div class="line">	-&gt;offset(2)</div><div class="line">	-&gt;asArray()</div><div class="line">	-&gt;all();</div></pre></td></tr></table></figure>
+<h3 id="join"><a href="#join" class="headerlink" title="join"></a>join</h3><p><strong>join()</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//第一个参数，可为&apos;left join&apos; ,&apos;right join&apos;,&apos;inner join&apos;</div><div class="line">$post = (new Query())-&gt;from(&apos;post&apos;)</div><div class="line">    -&gt;join(&apos;right join&apos;,&apos;user&apos;,&apos;user.id = post.author_id &apos;)</div><div class="line">	-&gt;all();</div></pre></td></tr></table></figure>
+<p><strong>innerJoin()</strong></p>
+<p><code>post</code> 为左表，<code>user</code>为右表。只有当左表和右表有对应的数据时，才会显示这条数据。比如，<code>post</code>必须有<code>author_id=1</code>且<code>user</code>有<code>id＝1</code>的数据，才会返回。</p>
+<p><strong>leftJoin()</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$post = (new Query())-&gt;from(&apos;post&apos;)</div><div class="line">	-&gt;innerJoin(&apos;user&apos;,&apos;user.id = post.author_id &apos;)</div><div class="line">	-&gt;all();</div></pre></td></tr></table></figure>
+<p><code>post</code> 为左表，<code>user</code>为右表。会以左表为中心，即<code>post</code>，会全部加载左表的内容，如果右表没有匹配项，则右表相应字段值显示为null。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$post = (new Query())-&gt;from(&apos;post&apos;)</div><div class="line">	-&gt;leftJoin(&apos;user&apos;,&apos;user.id = post.author_id &apos;)</div><div class="line">	-&gt;all();</div></pre></td></tr></table></figure>
+<p><strong>rightJoin()</strong></p>
+<p><code>post</code> 为左表，<code>user</code>为右表。会以右表为中心，即<code>user</code>，会全部加载右表的内容，如果左表没有匹配项，则左表相应字段值显示为null。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$post = (new Query())-&gt;from(&apos;post&apos;)</div><div class="line">	-&gt;rightJoin(&apos;user&apos;,&apos;user.id = post.author_id &apos;)</div><div class="line">	-&gt;all();</div></pre></td></tr></table></figure>
+<p><strong>union()</strong></p>
+<p>UNION 常用于<strong>数据类似</strong>的两张或多张表查询，如不同的数据分类表，或者是数据历史表等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$query_one = (new Query())-&gt;from(&apos;post&apos;)</div><div class="line">    -&gt;andFilterCompare(&apos;author_id&apos;,&apos;4&apos;,&apos;&lt;=&apos;);</div><div class="line"></div><div class="line">$query_two = (new Query())-&gt;from(&apos;user&apos;)</div><div class="line">    -&gt;where([&apos;id&apos;=&gt;1]);</div><div class="line">var_dump($query_two-&gt;union($query_one)-&gt;all());</div><div class="line">		</div><div class="line">//打印的结构是user表的结构，大家可以尝试一下，如果两张表结构差距很大，结果会很有趣</div></pre></td></tr></table></figure>
+<h3 id="批处理"><a href="#批处理" class="headerlink" title="批处理"></a>批处理</h3><p><code>yii\db\Query::all()</code>会把所有数据全部读出来，放到内存中。所以需要处理大数据时，不太适合。为了保持较低的内存占有，使用<code>batch</code>和<code>each</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//each</div><div class="line">$post = Post::find();</div><div class="line">foreach($post-&gt;each() as $key=&gt;$value) &#123;</div><div class="line">	var_dump($value-&gt;author_id);</div><div class="line">&#125;</div><div class="line"></div><div class="line">//batch</div><div class="line">$post = Post::find();</div><div class="line">foreach($post-&gt;batch() as $posts) &#123;</div><div class="line">    //posts是一个包含100条或小于100条数据的数组</div><div class="line">	foreach($posts as $key =&gt; $value) &#123;</div><div class="line">	var_dump($value-&gt;author_id);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Source-Code-Analysis-源码分析"><a href="#Source-Code-Analysis-源码分析" class="headerlink" title="Source Code Analysis 源码分析"></a>Source Code Analysis 源码分析</h2><h3 id="load"><a href="#load" class="headerlink" title="load()"></a>load()</h3><blockquote>
+<p>后记，<br>下一章内容：</p>
+<ul>
+<li>rules</li>
+<li>scenario</li>
+<li>validate</li>
+</ul>
+</blockquote>
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">留言</h1> -->
+
+  
+</section>
+
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+      
+        <div class="nav-next">
+          <a href="/2016/12/06/migrations/" rel="prev">下一页 <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <!-- Footer-widgets -->
+<div class="footer-widgets">
+  <div class="row inside-wrapper">
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">关于本站</h1>
+        <div class="custom-widget-content">
+          
+          <p align="left">一步一个脚印，细致地学习Yii2，从实践到阅读源码。</p>
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">与我联系</h1>
+        <div class="widget-text">
+          
+            
+              <a href="https://github.com/YuanLianDu" class="icon icon-github" target="_blank">github</a>
+            
+              <a href="mailto:yuanliandu@qq.com" class="icon icon-mail" target="_blank">mail</a>
+            
+          
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">站内搜索</h1>
+        <div class="widget-text">
+          <form onSubmit="return appDaily.submitSearch('')">
+            <p>
+              <input type="text" placeholder="search..." id="homeSearchInput">
+            </p>
+            <!-- <input type="submit" value="GO"> -->
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="site-info">
+  <p>
+    <span>hacking-with-yii2 &copy; 2016</span>
+    
+      <span class="split">|</span><span>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a></span>
+    
+  </p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+<script src="/js/app.js"></script>
+
+
+
+</body>
+
+</html>
