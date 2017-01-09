@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Head tag -->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="hacking-with-yii2">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="缘莲度">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="译Yii2-你需要知道的-3(Active Record)"/>
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="hacking-with-yii2" />
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="hacking-with-yii2"/>
+  <!--Type page-->
+  
+      <meta property="og:type" content="article" />
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>译Yii2-你需要知道的-3(Active Record) - hacking-with-yii2</title>
+
+
+  <link rel="shortcut icon" href="https://static.hinpc.com/image/2016/20160807-hi-logo.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+        <img src="https://avatars3.githubusercontent.com/u/23000895?v=3&s=200" alt="hacking-with-yii2" height="60">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            译Yii2-你需要知道的-3(Active Record)
+            
+          </h1>
+          <p class="posted-on">
+          2017-01-05
+          </p>
+          <div class="tags-links">
+            
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content">
+          <blockquote>
+<p><strong>Yii What you need to known</strong>系列一共五篇，是几年前的文章。来源博客Hash Solutions，<a href="http://blog.hashsolutions.in/technology/yii2-need-know-part-iii-activerecord/" target="_blank" rel="external">原文地址</a>。
+关于Yii介绍文章其实已经很多了，但是为了锻炼一下自己的英文水平、增强自己对Yii的整体认知影响，所以准备画蛇添足，翻译完这系列文章。
+对于初学者或者想了解Yii的，我觉得<strong>Yii What you need to known</strong>系列应该是很不错的。</p>
+</blockquote>
+<p>在我们探索Yii2框架系列的这一期，我们将详细介绍下这个强大框架的<code>ActiveRecord</code>和数据库方面。
+我们觉得这是Yii2在增强和添加新功能方面最出色的地方之一。</p>
+<h2 id="新的activerecord类的数据库支持"><a class="header-anchor" href="#新的activerecord类的数据库支持">¶</a>新的<code>ActiveRecord</code>类的数据库支持</h2>
+<p>在Yii2中<code>ActiveRecord</code>支持了很多新的数据库，包括基于NoSQL的。这些数据库包括<code>elasticsearch</code>,<code>Redis</code>,<code>Sphinx search</code>,<code>MongoDB</code>.
+这是一个非常好的消息，因为我们在切换数据库时，不需要触碰我们的代码，因为我们的代码都是用<code>ActiveRecord</code>和<code>DB</code>去交互的。</p>
+<h2 id="在yii2用activerecord来选择数据"><a class="header-anchor" href="#在yii2用activerecord来选择数据">¶</a>在Yii2用<code>ActiveRecord</code>来选择数据</h2>
+<p>你遇到的第一个主要变化将是<code>model()</code>调用的消亡。现在所有的<code>find</code>方法都来自于<code>find()</code>或者<code>findBySql()</code>。
+用blog举个例子：<code>Post::model()-&gt;findAll()</code>被<code>Post::find()-&gt;all()</code>取代了。在从数据库选择纪录时，展现了
+前所未有的灵活性，而且一旦我们习惯它，也非常直观。通过权威指南告诉我们如何使用<code>Active Record</code>从数据库选择数据的代码，我们将可以更加
+深刻的感受这种变化。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 取回所有customers数据，并按照id排序:</span></div><div class="line">$customers = Customer::find()</div><div class="line">    -&gt;where([<span class="string">'status'</span> =&gt; Customer::STATUS_ACTIVE])</div><div class="line">    -&gt;orderBy(<span class="string">'id'</span>)</div><div class="line">    -&gt;all();</div><div class="line"></div><div class="line"><span class="comment">// 返回id为1的customer数据:</span></div><div class="line">$customer = Customer::find()</div><div class="line">    -&gt;where([<span class="string">'id'</span> =&gt; <span class="number">1</span>])</div><div class="line">    -&gt;one();</div><div class="line"></div><div class="line"><span class="comment">// 返回状态为`active`的所有用户的总数:</span></div><div class="line">$count = Customer::find()</div><div class="line">    -&gt;where([<span class="string">'status'</span> =&gt; Customer::STATUS_ACTIVE])</div><div class="line">    -&gt;count();</div><div class="line"></div><div class="line"><span class="comment">// 返回以customer ID为索引的结果集:</span></div><div class="line">$customers = Customer::find()-&gt;indexBy(<span class="string">'id'</span>)-&gt;all();</div><div class="line"><span class="comment">// `$customers`数组是以customer的id为索引的</span></div><div class="line"></div><div class="line"><span class="comment">// 使用原生SQL语句取回所有客户:</span></div><div class="line">$sql = <span class="string">'SELECT * FROM customer'</span>;</div><div class="line">$customers = Customer::findBySql($sql)-&gt;all();</div></pre></td></tr></table></figure>
+<p>还有一些小捷径，这里有些函数可以替换掉Yii1.1的<code>findByPk()</code>和<code>find()</code>方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 返回id为1的customer数据:</span></div><div class="line">$customer = Customer::findOne(<span class="number">1</span>);</div><div class="line"></div><div class="line"><span class="comment">// 返回id为1，且`status`是`STATUS_ACTIVE`的customer数据:</span></div><div class="line">$customer = Customer::findOne([</div><div class="line">    <span class="string">'id'</span> =&gt; <span class="number">1</span>,</div><div class="line">    <span class="string">'status'</span> =&gt; Customer::STATUS_ACTIVE,</div><div class="line">]);</div><div class="line"></div><div class="line"><span class="comment">// 返回id为1、2或3的customer数据:</span></div><div class="line">$customers = Customer::findAll([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</div><div class="line"></div><div class="line"><span class="comment">// 返回状态为删除的所有customer数据:</span></div><div class="line">$customer = Customer::findAll([</div><div class="line">    <span class="string">'status'</span> =&gt; Customer::STATUS_DELETED,</div><div class="line">]);</div></pre></td></tr></table></figure>
+<h2 id="关联关系-relations"><a class="header-anchor" href="#关联关系-relations">¶</a>关联关系（Relations）</h2>
+<p>过去使用<code>relations()</code>，现在被返回<code>ActiveRecord</code>对象的getter取代</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Post</span> <span class="keyword">extends</span> <span class="title">yii</span>/<span class="title">db</span>/<span class="title">ActiveRecord</span></span></div><div class="line">&#123;</div><div class="line">   <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getComments</span><span class="params">()</span></span></div><div class="line">   &#123;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;hasMany(<span class="string">'Comment'</span>, <span class="keyword">array</span>(<span class="string">'post_id'</span> =&gt; <span class="string">'id'</span>));</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这种关系依然可以使用<code>$game-&gt;players</code>这种方式，但是现在你还可以自定义查询条件。例如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$comments = $post-&gt;getComments()-&gt;andWhere(<span class="string">'approve=1'</span>)-&gt;all();</div></pre></td></tr></table></figure>
+<h2 id="其他"><a class="header-anchor" href="#其他">¶</a>其他</h2>
+<p>这还有很多微妙的变化，会使你再次热爱上这个框架。你可能也想用数组来保存从数据库获取的数据，因此可以节省内存。
+现在可以使用<code>asArray()</code>来实现：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$posts = Post::find()-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure>
+<p>当获取大量数据的时候，你会期望批量返回数据，以此使你的内存使用情况控制在内存限制范围以内。你在<code>ActiveRecord</code>中依然可以使用这个技术</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 一次返回10篇文章</span></div><div class="line"><span class="keyword">foreach</span> (Post::find()-&gt;batch(<span class="number">10</span>) <span class="keyword">as</span> $posts) &#123;</div><div class="line">    <span class="comment">// `$posts`是一个数组或者是一些post对象</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// 以此获取10篇文章，并且依次迭代它们</span></div><div class="line"><span class="keyword">foreach</span> (Post::find()-&gt;each(<span class="number">10</span>) <span class="keyword">as</span> $post) &#123;</div><div class="line">    <span class="comment">// $post 是一个 `Post` 对象</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// 批量查询和即时加载</span></div><div class="line"><span class="keyword">foreach</span> (Post::find()-&gt;with(<span class="string">'comments'</span>)-&gt;each() <span class="keyword">as</span> $post) &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>另外，Yii2现在支持嵌套事务，因此你不必担心事务是否已在当前调用堆栈中声明。</p>
+<h2 id="总结"><a class="header-anchor" href="#总结">¶</a>总结</h2>
+<p>这绝不是Yii2在<code>ActiveRecord</code>所做改进和进步的详细列表。我们发现有些改变，相当的灵活和直接。
+你可以让我们直到你的想法。对于良好的<a href="http://digitalreveries.in/2016/12/angular2-yii2-project-structure/" target="_blank" rel="external">Angular2 Yii2项目结构</a>，您可以访问链接的页面。</p>
+<p>快速导航，其他文章链接：</p>
+<ul>
+<li><a href="https://easy-yii.github.io/2017/01/04/know-PartOne/">part1</a></li>
+<li><a href="https://easy-yii.github.io/2017/01/04/know-PartTwo/">part2</a></li>
+<li><a href="https://easy-yii.github.io/2017/01/05/know-PartFour/">part4</a></li>
+<li><a href="https://easy-yii.github.io/2017/01/09/know-PartFive/">part5</a></li>
+</ul>
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">留言</h1> -->
+
+  
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-know-PartThree" data-title="译Yii2-你需要知道的-3(Active Record)" data-url="http://easy-yii.github.io/2017/01/05/know-PartThree/"></div>
+    <!-- 多说评论框 end -->
+  
+</section>
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2017/01/05/know-PartFour/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> 上一页</a>
+        </div>
+      
+      
+        <div class="nav-next">
+          <a href="/2017/01/04/know-PartTwo/" rel="prev">下一页 <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- Footer-widgets -->
+<div class="footer-widgets">
+	<div class="row inside-wrapper">
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">关于本站</h1>
+
+				<div class="custom-widget-content">
+					
+					<p align="left">一步一个脚印，细致地学习Yii2，从实践到阅读源码。</p>
+				</div>
+			</aside>
+		</div>
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">与我联系</h1>
+
+				<div class="widget-text">
+					
+					
+					<a href="https://github.com/YuanLianDu" class="icon icon-github" target="_blank">github</a>
+					
+					<a href="mailto:yuanliandu@qq.com" class="icon icon-mail" target="_blank">mail</a>
+					
+					
+				</div>
+			</aside>
+		</div>
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">站内搜索</h1>
+
+				<div class="widget-text">
+					<form onSubmit="return appDaily.submitSearch('')">
+						<p>
+							<input type="text" placeholder="search..." id="homeSearchInput">
+						</p>
+						<!--<input type="submit" value="GO">-->
+					</form>
+				</div>
+			</aside>
+		</div>
+		<div style="margin-right: 220px">
+			<span id="busuanzi_container_site_pv">
+				本站总访问量<span id="busuanzi_value_site_pv"></span>次
+			</span>
+			<span id="busuanzi_container_site_uv">
+                本站访客数<span id="busuanzi_value_site_uv"></span>人次
+			</span>
+		</div>
+	</div>
+</div>
+
+
+<!-- Footer -->
+<footer class="site-info">
+	<p>
+		<span>hacking-with-yii2 &copy; 2017</span>
+		
+		<span class="split">|</span><span>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a></span>
+		
+	</p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+<script src="/js/app.js"></script>
+
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'easy-yii'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+
+
+
+</body>
+
+</html>

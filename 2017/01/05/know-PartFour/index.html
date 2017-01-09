@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Head tag -->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="hacking-with-yii2">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="缘莲度">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="译Yii2-你需要知道的-4(Events, Behaviors &amp; Errors)"/>
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="hacking-with-yii2" />
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="hacking-with-yii2"/>
+  <!--Type page-->
+  
+      <meta property="og:type" content="article" />
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>译Yii2-你需要知道的-4(Events, Behaviors &amp; Errors) - hacking-with-yii2</title>
+
+
+  <link rel="shortcut icon" href="https://static.hinpc.com/image/2016/20160807-hi-logo.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+        <img src="https://avatars3.githubusercontent.com/u/23000895?v=3&s=200" alt="hacking-with-yii2" height="60">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            译Yii2-你需要知道的-4(Events, Behaviors & Errors)
+            
+          </h1>
+          <p class="posted-on">
+          2017-01-05
+          </p>
+          <div class="tags-links">
+            
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content">
+          <blockquote>
+<p><strong>Yii What you need to known</strong>系列一共五篇，是几年前的文章。来源博客Hash Solutions，<a href="http://blog.hashsolutions.in/technology/yii2-what-you-need-to-know-part-iv-events-behaviors-errors/" target="_blank" rel="external">原文地址</a>。
+关于Yii介绍文章其实已经很多了，但是为了锻炼一下自己的英文水平、增强自己对Yii的整体认知影响，所以准备画蛇添足，翻译完这系列文章。
+对于初学者或者想了解Yii的，我觉得<strong>Yii What you need to known</strong>系列应该是很不错的。</p>
+</blockquote>
+<p>在我们探索Yii2框架系列的本篇，我们将会介绍Yii2框架的事件(<code>Event</code>)管理、行为(<code>Behavior</code>)管理和错误处理(<code>Error Handling</code>)。
+Yii2处理这些关键特征与Yii相比较而言，有明显的区别。</p>
+<h2 id="事件-events"><a class="header-anchor" href="#事件-events">¶</a>事件(Events)</h2>
+<p>对于那些从未在Yii项目中使用过<code>Events</code>，我要告诉你们，你们错过了一个强大的功能。
+<code>Events</code>非常有用，有两个原因。首先，它们可以让组件更加灵活。其次，您可以将自己的代码挂接到正在使用的框架和扩展的工作流中。</p>
+<p>可以使用<code>component</code>对象的<code>on()</code>方法为你的代码分配一个<code>event</code>处理程序。
+第一个参数是，我们要观察的事件名称；第二个参数是，当事件发生时，要调用的函数。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$component-&gt;on($eventName, $handler);</div></pre></td></tr></table></figure>
+<p><code>$handler</code>可以是以下任意一个：</p>
+<ul>
+<li>全局函数的名称</li>
+<li>由模型名称和方法名称组成的数组</li>
+<li>由对象和方法名组成的数组</li>
+<li>匿名函数</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 全局函数:</span></div><div class="line">$component-&gt;on($eventName, <span class="string">'functionName'</span>);</div><div class="line"></div><div class="line"><span class="comment">// 模型名称和方法名称:</span></div><div class="line">$component-&gt;on($eventName, [<span class="string">'Modelname'</span>, <span class="string">'functionName'</span>]);</div><div class="line"></div><div class="line"><span class="comment">//对象和方法名:</span></div><div class="line">$component-&gt;on($eventName, [$obj, <span class="string">'functionName'</span>]);</div><div class="line"></div><div class="line"><span class="comment">// 匿名函数:</span></div><div class="line">$component-&gt;on($eventName, <span class="function"><span class="keyword">function</span> <span class="params">($event)</span> </span>&#123;</div><div class="line"><span class="comment">// Use $event.</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>另外，<code>event handlers</code>(事件处理程序)也可以附加在配置文件里。</p>
+<p>大多数<code>events</code>在正常的工作流程中都会被触发，比如，<code>beforeSave()</code>事件会发生在一个<code>ActiveRecord</code>保存之前。</p>
+<p>但是你依然可以用<code>trigger</code>方法手动触发一个事件，在组件中调用附加的处理程序；</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">$this</span>-&gt;trigger(<span class="string">'myEvent'</span>);</div><div class="line"></div><div class="line"><span class="comment">// or</span></div><div class="line"></div><div class="line">$event = <span class="keyword">new</span> CreateUserEvent(); <span class="comment">// extended from yii\base\Event</span></div><div class="line">$event-&gt;userName = <span class="string">'Alexander'</span>;</div><div class="line"><span class="keyword">$this</span>-&gt;trigger(<span class="string">'createUserEvent'</span>, $event);</div></pre></td></tr></table></figure>
+<p>相对较新的事件管理特性是，一次性向所有的实例添加事件处理程序；</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, <span class="function"><span class="keyword">function</span> <span class="params">($event)</span> </span>&#123;</div><div class="line">    Yii::trace(get_class($event-&gt;sender) . <span class="string">' is inserted.'</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="行为-behaviors"><a class="header-anchor" href="#行为-behaviors">¶</a>行为（Behaviors）</h2>
+<p>在Yii框架中，行为实现了<a href="https://en.wikipedia.org/wiki/Mixin" target="_blank" rel="external">Mixin</a>模式。它们可以增强组件的功能，但是不用修改组件的代码；
+行为还可以响应在组件中触发的事件，从而拦截正常代码的执行。与PHP<code>Traits</code>不同，<code>behaviors</code>可以在代码运行时，附加到类。</p>
+<p>我们用组件的<code>behaviors()</code>方法为其分配<code>behavior</code>。<code>timestamp behavior</code>（时间戳行为），一个得益于行为的很好的例子。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> <span class="title">yii</span>\<span class="title">behaviors</span>\<span class="title">TimestampBehavior</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> <span class="title">ActiveRecord</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">behaviors</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> [</div><div class="line">            <span class="string">'timestamp'</span> =&gt; [</div><div class="line">                <span class="string">'class'</span> =&gt; TimestampBehavior::className(),</div><div class="line">                <span class="string">'attributes'</span> =&gt; [</div><div class="line">                    ActiveRecord::EVENT_BEFORE_INSERT =&gt; [<span class="string">'created_at'</span>, <span class="string">'updated_at'</span>],</div><div class="line">                    ActiveRecord::EVENT_BEFORE_UPDATE =&gt; <span class="string">'updated_at'</span>,</div><div class="line">                ],</div><div class="line">            ],</div><div class="line">        ];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在上面代码中，键名<code>timestamp</code>可以在组建中直接引用。比如，<code>$user-&gt;timestamp</code>给出了附加的<code>timestamp behavior</code>（时间戳行为）实例。
+相对应的数组，是生成一个<code>TimestampBehavior</code>对象的配置。</p>
+<p>除了响应<code>ActiveRecord</code>的插入和修改事件，<code>TimestampBehavior</code>提供了一个方法<code>touch()</code>可以将当前时间戳分配给指定的属性。综上所述，
+你可以在组件中直接使用此方法，如:<code>$user-&gt;touch('login_time');</code></p>
+<p>你也可以创建你自己的<code>behavior</code>（行为），例如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">namespace</span> <span class="title">app</span>\<span class="title">components</span>;</div><div class="line"></div><div class="line"><span class="keyword">use</span> <span class="title">yii</span>\<span class="title">base</span>\<span class="title">Behavior</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyBehavior</span> <span class="keyword">extends</span> <span class="title">Behavior</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span> $attr;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以在你类中，直接被访问:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">behaviors</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> [</div><div class="line">        <span class="string">'mybehavior'</span> =&gt; [</div><div class="line">            <span class="string">'class'</span> =&gt; <span class="string">'app\components\MyBehavior'</span>,</div><div class="line">            <span class="string">'attr'</span> =&gt; <span class="string">'member_type'</span></div><div class="line">        ],</div><div class="line">    ];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Yii错误处理总是不同于使用纯PHP处理错误。 Yii将所有非致命错误转换为异常。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> <span class="title">yii</span>\<span class="title">base</span>\<span class="title">ErrorException</span>;</div><div class="line"><span class="keyword">use</span> <span class="title">Yii</span>;</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    <span class="number">10</span>/<span class="number">0</span>;</div><div class="line">&#125; <span class="keyword">catch</span> (ErrorException $e) &#123;</div><div class="line">    Yii::warning(<span class="string">"Tried dividing by zero."</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// execution may continue</span></div></pre></td></tr></table></figure>
+<p>如上所示，您可以使用try-catch处理错误。
+<code>exception</code>对象有如下属性：</p>
+<ul>
+<li>状态码： HTTP状态码（如，403，500）；仅适用于HTTP异常。</li>
+<li>代码：异常的代码；</li>
+<li>信息：错误信息；</li>
+<li>文件：错误发生时，PHP脚本的文件名；</li>
+<li>行数：错误发生在哪一行；</li>
+<li>跟踪：调用堆栈的错误。</li>
+</ul>
+<h2 id="总结："><a class="header-anchor" href="#总结：">¶</a>总结：</h2>
+<p>可以看出Yii2的事件处理和行为是非常值得关注的。
+希望你喜欢这个系列中的这一期。请随时提供您的反馈和想法。</p>
+<p>快速导航，其他文章链接：</p>
+<ul>
+<li><a href="https://easy-yii.github.io/2017/01/04/know-PartOne/">part1</a></li>
+<li><a href="https://easy-yii.github.io/2017/01/04/know-PartTwo/">part2</a></li>
+<li><a href="https://easy-yii.github.io/2017/01/05/know-PartThree/">part3</a></li>
+<li><a href="https://easy-yii.github.io/2017/01/09/know-PartFive/">part5</a></li>
+</ul>
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">留言</h1> -->
+
+  
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-know-PartFour" data-title="译Yii2-你需要知道的-4(Events, Behaviors &amp; Errors)" data-url="http://easy-yii.github.io/2017/01/05/know-PartFour/"></div>
+    <!-- 多说评论框 end -->
+  
+</section>
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2017/01/09/know-PartFive/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> 上一页</a>
+        </div>
+      
+      
+        <div class="nav-next">
+          <a href="/2017/01/05/know-PartThree/" rel="prev">下一页 <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- Footer-widgets -->
+<div class="footer-widgets">
+	<div class="row inside-wrapper">
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">关于本站</h1>
+
+				<div class="custom-widget-content">
+					
+					<p align="left">一步一个脚印，细致地学习Yii2，从实践到阅读源码。</p>
+				</div>
+			</aside>
+		</div>
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">与我联系</h1>
+
+				<div class="widget-text">
+					
+					
+					<a href="https://github.com/YuanLianDu" class="icon icon-github" target="_blank">github</a>
+					
+					<a href="mailto:yuanliandu@qq.com" class="icon icon-mail" target="_blank">mail</a>
+					
+					
+				</div>
+			</aside>
+		</div>
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">站内搜索</h1>
+
+				<div class="widget-text">
+					<form onSubmit="return appDaily.submitSearch('')">
+						<p>
+							<input type="text" placeholder="search..." id="homeSearchInput">
+						</p>
+						<!--<input type="submit" value="GO">-->
+					</form>
+				</div>
+			</aside>
+		</div>
+		<div style="margin-right: 220px">
+			<span id="busuanzi_container_site_pv">
+				本站总访问量<span id="busuanzi_value_site_pv"></span>次
+			</span>
+			<span id="busuanzi_container_site_uv">
+                本站访客数<span id="busuanzi_value_site_uv"></span>人次
+			</span>
+		</div>
+	</div>
+</div>
+
+
+<!-- Footer -->
+<footer class="site-info">
+	<p>
+		<span>hacking-with-yii2 &copy; 2017</span>
+		
+		<span class="split">|</span><span>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a></span>
+		
+	</p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+<script src="/js/app.js"></script>
+
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'easy-yii'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+
+
+
+</body>
+
+</html>

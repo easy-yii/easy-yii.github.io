@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Head tag -->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="hacking-with-yii2">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="缘莲度">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="译Yii2-你需要知道的-2(MVC)"/>
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="hacking-with-yii2" />
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="hacking-with-yii2"/>
+  <!--Type page-->
+  
+      <meta property="og:type" content="article" />
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>译Yii2-你需要知道的-2(MVC) - hacking-with-yii2</title>
+
+
+  <link rel="shortcut icon" href="https://static.hinpc.com/image/2016/20160807-hi-logo.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+        <img src="https://avatars3.githubusercontent.com/u/23000895?v=3&s=200" alt="hacking-with-yii2" height="60">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            译Yii2-你需要知道的-2(MVC)
+            
+          </h1>
+          <p class="posted-on">
+          2017-01-04
+          </p>
+          <div class="tags-links">
+            
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content">
+          <blockquote>
+<p><strong>Yii What you need to known</strong>系列一共五篇，是几年前的文章。来源博客Hash Solutions，<a href="http://blog.hashsolutions.in/technology/yii2-what-you-need-to-know-part-ii/" target="_blank" rel="external">原文地址</a>。
+关于Yii介绍文章其实已经很多了，但是为了锻炼一下自己的英文水平、增强自己对Yii的整体认知影响，所以准备画蛇添足，翻译完这系列文章。
+对于初学者或者想了解Yii的，我觉得<strong>Yii What you need to known</strong>系列应该是很不错的。</p>
+</blockquote>
+<p>在这个系列的第二部分，我将介绍Yii2框架的核心概念MVC。Yii2的MVC结构基本与Yii1.1相同。
+从图片我们可以看得出（😂 原文图片加载不出来了～）。但是当我们深入研究结构的构造时，我们发现了很多的变化，这将使Yii2
+平台上的开发称为有价值的体验。</p>
+<h2 id="models-模型"><a class="header-anchor" href="#models-模型">¶</a>Models（模型）</h2>
+<p>Yii中的<code>Models</code>从类<code>yii\base\Model</code>继承。<code>Models</code>通常用于保存数据和定义该数据（也称为业务逻辑）的验证规则。
+业务逻辑通过提供验证和错误报告，简化了复杂的web表单生成models过程。</p>
+<p>Yii的模型有以下基本特性：</p>
+<ul>
+<li>属性声明：model定义属性</li>
+<li>属性标签：每个属性可以与用于显示目的的标签相关联。</li>
+<li>大规模属性分配：能够在一个步骤中填充多个模型属性</li>
+<li>基于场景的数据验证</li>
+</ul>
+<p>类Model也是高级model（具有额外功能）的基类，比如<code>Active Record</code>。<code>Active Record</code>（活动纪录类）的改变
+保证了自己的地位，我们会在稍后的篇章进行介绍。</p>
+<p>属性和属性标签与框架的上一次迭代或多或少相同。变化更突出的是，模型的场景和验证。替代了之前将场景和验证合二为一的处理函数，
+Yii2将其分成了两个函数<code>rules()</code>和<code>scenarios()</code>。<code>rules()</code>指定任何属性的实际验证，而<code>scenarios()</code>函数指定哪些属性可以安全地分配给模型。
+参考如下例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> <span class="title">ActiveRecord</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">rules</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> [</div><div class="line">            <span class="comment">//当相应的字段是"safe"时，应用规则</span></div><div class="line">            [<span class="string">'username'</span>, <span class="string">'string'</span>, <span class="string">'length'</span> =&gt; [<span class="number">4</span>, <span class="number">32</span>]],</div><div class="line">            [<span class="string">'first_name'</span>, <span class="string">'string'</span>, <span class="string">'max'</span> =&gt; <span class="number">128</span>],</div><div class="line">            [<span class="string">'password'</span>, <span class="string">'required'</span>],</div><div class="line">        ];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">scenarios</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> [</div><div class="line">            <span class="comment">// on signup allow mass assignment of username</span></div><div class="line">            <span class="string">'signup'</span> =&gt; [<span class="string">'username'</span>, <span class="string">'password'</span>],</div><div class="line">            <span class="string">'update'</span> =&gt; [<span class="string">'username'</span>, <span class="string">'first_name'</span>],</div><div class="line">        ];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里，<code>password</code>只在<code>signup</code>场景分配给model，它的验证也只在该场景下应用。
+我们感觉到了model验证字段的根本性变化，分配是一个重大的进步，使开发和设计的模式更加灵活和容易。</p>
+<p>大规模的分配字段，也发生了一些改变，如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_POST[<span class="string">'userModel'</span>]))</div><div class="line">&#123;</div><div class="line">   $model-&gt;attributes = $_POST[<span class="string">'userModel'</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>也可以<code>$model-&gt;load($_POST);</code></p>
+<p>这里的关键是<code>load()</code>会自动检查<code>$_POST</code>中适当的索引，由可覆盖的<code>$model-&gt;formName()</code>定义。</p>
+<h2 id="views-视图"><a class="header-anchor" href="#views-视图">¶</a>Views （视图）</h2>
+<p>许多细微的变化贯穿于Yii2的View组件。最明显和最显着的变化是<code>render()</code>函数现在返回一个值而不是输出它。
+一个例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">actionIndex</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    $models = Posts::find()-&gt;all();</div><div class="line">    <span class="keyword">echo</span> <span class="keyword">$this</span>-&gt;render(<span class="string">'index'</span>, <span class="keyword">array</span>(<span class="string">'models'</span> =&gt; $models));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>正如你所看见的渲染的内容可以被(echo)打印（你将会在<code>Controller</code>部分看到，返回输出是非常常见的）。此外，
+对于那些渴望模板引擎支持的意见，现在有新的官方扩展，支持smarty和twig。</p>
+<p>视图的一个主要变化是<code>$this</code>的用法。在Yii1.1中<code>$this</code>是控制器调用视图的上下文。但是在Yii2中，<code>$this</code>是指
+<code>yii\web\View</code>这个组件。这允许了一些有用且有趣的事情，比如在页面中设置页面的<code>title</code>和<code>meta</code>、注册脚本等。
+这使得代码更加直观。调用视图的对象仍然可以使用<code>$this-&gt;context</code>。</p>
+<h2 id="controllers-控制器"><a class="header-anchor" href="#controllers-控制器">¶</a>Controllers （控制器）</h2>
+<p>首先展示一段代码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">namespace</span> <span class="title">app</span>\<span class="title">controllers</span>;</div><div class="line"></div><div class="line"><span class="keyword">use</span> <span class="title">yii</span>\<span class="title">web</span>\<span class="title">Controller</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SiteController</span> <span class="keyword">extends</span> <span class="title">Controller</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">actionIndex</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="comment">// will render view from "views/site/index.php"</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;render(<span class="string">'index'</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">actionTest</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="comment">// will just print "test" to the browser</span></div><div class="line">        <span class="keyword">return</span> <span class="string">'test'</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>正如我们所看到的，Yii2很好的使用了PHP的特性，命名空间。一个<code>action</code>的输出通常是<code>return</code>。
+除此之外，控制器的基本原则仍然和原来一样。</p>
+<h2 id="总结"><a class="header-anchor" href="#总结">¶</a>总结</h2>
+<p>可以看出，Yii2的MVC组件的几乎所有变化都是更好的，我们相信它们将为开发人员提供增强的体验。
+在下一部分中，我们旨在深入了解框架的<code>ActiveRecord</code>和<code>DB</code>处理部分，因为它经历了大量的更改，因此需要一个完整的篇幅来涵盖所有的内容。</p>
+<p>快速导航，其他文章链接：</p>
+<ul>
+<li><a href="https://easy-yii.github.io/2017/01/04/know-PartOne/">part1</a></li>
+<li><a href="https://easy-yii.github.io/2017/01/05/know-PartThree/">part3</a></li>
+<li><a href="https://easy-yii.github.io/2017/01/05/know-PartFour/">part4</a></li>
+<li><a href="https://easy-yii.github.io/2017/01/09/know-PartFive/">part5</a></li>
+</ul>
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">留言</h1> -->
+
+  
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-know-PartTwo" data-title="译Yii2-你需要知道的-2(MVC)" data-url="http://easy-yii.github.io/2017/01/04/know-PartTwo/"></div>
+    <!-- 多说评论框 end -->
+  
+</section>
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2017/01/05/know-PartThree/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> 上一页</a>
+        </div>
+      
+      
+        <div class="nav-next">
+          <a href="/2017/01/04/know-PartOne/" rel="prev">下一页 <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- Footer-widgets -->
+<div class="footer-widgets">
+	<div class="row inside-wrapper">
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">关于本站</h1>
+
+				<div class="custom-widget-content">
+					
+					<p align="left">一步一个脚印，细致地学习Yii2，从实践到阅读源码。</p>
+				</div>
+			</aside>
+		</div>
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">与我联系</h1>
+
+				<div class="widget-text">
+					
+					
+					<a href="https://github.com/YuanLianDu" class="icon icon-github" target="_blank">github</a>
+					
+					<a href="mailto:yuanliandu@qq.com" class="icon icon-mail" target="_blank">mail</a>
+					
+					
+				</div>
+			</aside>
+		</div>
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">站内搜索</h1>
+
+				<div class="widget-text">
+					<form onSubmit="return appDaily.submitSearch('')">
+						<p>
+							<input type="text" placeholder="search..." id="homeSearchInput">
+						</p>
+						<!--<input type="submit" value="GO">-->
+					</form>
+				</div>
+			</aside>
+		</div>
+		<div style="margin-right: 220px">
+			<span id="busuanzi_container_site_pv">
+				本站总访问量<span id="busuanzi_value_site_pv"></span>次
+			</span>
+			<span id="busuanzi_container_site_uv">
+                本站访客数<span id="busuanzi_value_site_uv"></span>人次
+			</span>
+		</div>
+	</div>
+</div>
+
+
+<!-- Footer -->
+<footer class="site-info">
+	<p>
+		<span>hacking-with-yii2 &copy; 2017</span>
+		
+		<span class="split">|</span><span>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a></span>
+		
+	</p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+<script src="/js/app.js"></script>
+
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'easy-yii'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+
+
+
+</body>
+
+</html>

@@ -18,7 +18,7 @@
 
   <!--Open Graph Title-->
   
-      <meta property="og:title" content="model-1"/>
+      <meta property="og:title" content="model-1(curd)"/>
   
   <!--Open Graph Description-->
   
@@ -37,7 +37,7 @@
 
   <!-- Title -->
   
-  <title>model-1 - hacking-with-yii2</title>
+  <title>model-1(curd) - hacking-with-yii2</title>
 
 
   <link rel="shortcut icon" href="https://static.hinpc.com/image/2016/20160807-hi-logo.png">
@@ -125,7 +125,7 @@
         <!-- Title date & tags -->
         <div class="post-header">
           <h1 class="entry-title">
-            model-1
+            model-1(curd)
             
           </h1>
           <p class="posted-on">
@@ -461,9 +461,7 @@ Controller，主要处理view传来的请求，向model请求数据，并将请�
 <p><strong>not exists</strong></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//如果不存在author_id 为2的数据，返回所有的纪录</span></div><div class="line">$query = Post::find()-&gt;where([<span class="string">'author_id'</span>=&gt;<span class="number">2</span>]);</div><div class="line">$post = Post::find()-&gt;select([<span class="string">'id'</span>,<span class="string">'author_id'</span>, <span class="string">'title'</span>, <span class="string">'body'</span>])</div><div class="line">			-&gt;where( [<span class="string">'exists'</span>,$query])</div><div class="line">			-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure>
 <h4 id="orderby-排序"><a class="header-anchor" href="#orderby-排序">¶</a>orderBy:排序</h4>
-<p><code>$post = Post::find()-&gt;orderBy(['id' =&gt; SORT_ASC, 'author_id' =&gt; SORT_DESC,])-&gt;all();</code>
-<code>$post = Post::find()-&gt;orderBy('id ASC, author_id DESC')-&gt;all();</code>
-<code>$post = Post::find()-&gt;orderBy('id ASC')-&gt;addOrderBy('author_id DESC')-&gt;all();</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$post = Post::find()</div><div class="line">-&gt;orderBy([<span class="string">'id'</span> =&gt; SORT_ASC, <span class="string">'author_id'</span> =&gt; SORT_DESC,])</div><div class="line">-&gt;all();</div><div class="line"></div><div class="line">$post = Post::find()</div><div class="line">-&gt;orderBy(<span class="string">'id ASC, author_id DESC'</span>)</div><div class="line">-&gt;all();</div><div class="line"></div><div class="line">$post = Post::find()</div><div class="line">-&gt;orderBy(<span class="string">'id ASC'</span>)</div><div class="line">-&gt;addOrderBy(<span class="string">'author_id DESC'</span>)</div><div class="line">-&gt;all();</div></pre></td></tr></table></figure>
 <h4 id="having"><a class="header-anchor" href="#having">¶</a>having</h4>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//查找body字段中有update的纪录，并计算所有该作者的文章总和</span></div><div class="line">$post = Post::find()</div><div class="line">		    -&gt;select([<span class="string">'COUNT(*) AS count'</span>,<span class="string">'author_id'</span>,<span class="string">'body'</span>])</div><div class="line">			-&gt;having([<span class="string">'like'</span>,<span class="string">'body'</span>,<span class="string">'update'</span>])</div><div class="line">			-&gt;groupBy(<span class="string">'author_id'</span>)</div><div class="line">			-&gt;asArray()</div><div class="line">			-&gt;all();</div></pre></td></tr></table></figure>
 <h4 id="groupby"><a class="header-anchor" href="#groupby">¶</a>groupBy</h4>
@@ -536,7 +534,7 @@ Controller，主要处理view传来的请求，向model请求数据，并将请�
 
   
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="post-model-1" data-title="model-1" data-url="http://easy-yii.github.io/2016/12/06/model-1/"></div>
+    <div class="ds-thread" data-thread-key="post-model-1" data-title="model-1(curd)" data-url="http://easy-yii.github.io/2016/12/06/model-1/"></div>
     <!-- 多说评论框 end -->
   
 </section>
@@ -544,6 +542,10 @@ Controller，主要处理view传来的请求，向model请求数据，并将请�
     </div>
     <!-- Pre or Next -->
     <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2016/12/07/model-2/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> 上一页</a>
+        </div>
       
       
         <div class="nav-next">
@@ -617,7 +619,7 @@ Controller，主要处理view传来的请求，向model请求数据，并将请�
 <!-- Footer -->
 <footer class="site-info">
 	<p>
-		<span>hacking-with-yii2 &copy; 2016</span>
+		<span>hacking-with-yii2 &copy; 2017</span>
 		
 		<span class="split">|</span><span>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a></span>
 		
