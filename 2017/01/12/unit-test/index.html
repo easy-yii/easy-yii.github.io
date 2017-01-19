@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Head tag -->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="hacking-with-yii2">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="缘莲度">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="测试 yii2-codeception(1)－－单元测试"/>
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="hacking-with-yii2" />
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="hacking-with-yii2"/>
+  <!--Type page-->
+  
+      <meta property="og:type" content="article" />
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>测试 yii2-codeception(1)－－单元测试 - hacking-with-yii2</title>
+
+
+  <link rel="shortcut icon" href="https://static.hinpc.com/image/2016/20160807-hi-logo.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+        <img src="https://avatars3.githubusercontent.com/u/23000895?v=3&s=200" alt="hacking-with-yii2" height="60">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            测试 yii2-codeception(1)－－单元测试
+            
+          </h1>
+          <p class="posted-on">
+          2017-01-12
+          </p>
+          <div class="tags-links">
+            
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content">
+          <h2 id="测试"><a class="header-anchor" href="#测试">¶</a>测试</h2>
+<p>1、测试主要分为以下三种类型：</p>
+<ul>
+<li>单元测试：验证一个独立的代码单元是否按照期望的方式运行。test</li>
+<li>功能测试：在<strong>浏览器模拟器</strong>中以用户视角来验证期望的场景是否发生。cest</li>
+<li>验收测试：与功能测试相同，但实际上通过<strong>真实的Web浏览器</strong>运行测试。cept</li>
+</ul>
+<p>2、BDD 与 TDD</p>
+<p><strong>TDD(Test Driven Development)</strong>，测试驱动开发。是测试优先的开发模式。先写测试代码，再编写具体业务逻辑代码，然后运行单元测试，如果失败，就继续修正代码～。
+如果有新的功能，就如下面的流程图一样：
+<img src="http://joshldavis.com/img/tdd-vs-bdd/tdd-flowchart.png" alt="Test Driven Development"></p>
+<p>但是，TDD开发模式，可能会造成一些问题～它要求先写测试，这就要求项目需求清晰，而且程序员对整个项目架构很熟悉，能提前抽离一些借口代码。否则，项目很容易失控。
+但是当一个业务模型及其复杂、内部模块之间的相互依赖性非常强，就比较麻烦了，这会导致程序员在拆分接口和写测试代码的时候工作量非常大。</p>
+<p><strong>BDD(Behavior Driven Development)</strong>,行为驱动开发。这相当于，TDD的扩展。它旨在消除TDD可能导致的问题。</p>
+<p>这里只简单的说明下，如果大家很感兴趣，建议大家再多查查资料，深入了解一下～。</p>
+<h2 id="codeception-与-phpunit-之间是什么关系？"><a class="header-anchor" href="#codeception-与-phpunit-之间是什么关系？">¶</a>codeception  与 PHPUnit 之间是什么关系？</h2>
+<p><code>codeception</code> 采用<code>PHPUnit</code>作为它运行测试的后端，所以任何<code>PHPUnit</code>测试都可以在<code>codeception</code>测试中运行。
+另外，<strong>如果安装了<code>codeception</code>就不需要再另外安装<code>PHPUnit</code>啦~</strong></p>
+<h2 id="全局安装codeception"><a class="header-anchor" href="#全局安装codeception">¶</a>全局安装codeception</h2>
+<p>1、全局安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">composer global require <span class="string">"codeception/codeception"</span></div><div class="line">composer global require <span class="string">"codeception/specify=*"</span>    //用于在单元测试中写入规范</div><div class="line">composer global require <span class="string">"codeception/verify=*"</span></div></pre></td></tr></table></figure>
+<p>安装<code>codeception/specify</code>和<code>codeception/verify</code>，可以更好的形成BDD(Behavior Driven Development)规范测试.</p>
+<p>2、查看状态：<code>composer global status</code></p>
+<p>3、建立符号链接：<code>sudo ln -s ~/.composer/vendor/bin/codecept /usr/local/bin/codecept</code></p>
+<p>4、codecept 常用命令：</p>
+<ul>
+<li><code>codecept bootstrap</code></li>
+<li><code>codecept build</code></li>
+<li><code>codecept run</code></li>
+</ul>
+<p>也可以这样使用</p>
+<ul>
+<li><code>composer exec codecept build</code></li>
+<li><code>composer exec codecept run</code></li>
+</ul>
+<p>暂时还不清楚两种方式的区别～～</p>
+<h2 id="yii-basic"><a class="header-anchor" href="#yii-basic">¶</a>yii-basic</h2>
+<blockquote>
+<p>我们在yii2中尝试使用codeception，采用的版本是basic版本。</p>
+</blockquote>
+<p>使用composer创建yii－basic项目的时候，yii2已经添加<code>codeception</code>框架了。<strong>如果已经全局安装了<code>codeception</code>，建议移除项目中的codeception，至于为啥，你看最下面（踩过的那些坑儿－2）</strong></p>
+<p>但是没有安装yii2的扩展<code>yiisoft/yii2-codeception</code>，所以使用
+<code>composer require --prefer-dist yiisoft/yii2-codeception</code>命令安装此扩展。</p>
+<p><a href="http://www.yiiframework.com/doc-2.0/ext-codeception-index.html#installation" target="_blank" rel="external">yii2-codeception 扩展安装</a></p>
+<h3 id="yii2下的测试目录"><a class="header-anchor" href="#yii2下的测试目录">¶</a>yii2下的测试目录</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">－test</div><div class="line">    - _data</div><div class="line">    - _output # 输出文件夹 </div><div class="line">    - _support</div><div class="line">    - acceptance # 验收测试代码放置的文件夹</div><div class="line">    - bin # 放置的是Yii2测试环境下，可以执行命令文件</div><div class="line">    - functional # 功能测试代码放置的文件夹</div><div class="line">    - unit  # 单元测试代码放置的文件夹</div><div class="line">    - _bootstrap.php # 初始化文件</div><div class="line">    - acceptance.suite.yml.example  # 验收测试配置文件</div><div class="line">    - functional.suite.yml # 功能测试配置文件</div><div class="line">    - unit.suite.yml  # 单元测试配置文件</div></pre></td></tr></table></figure>
+<ol>
+<li><code>acceptance.suite.yml.example</code>文件配置</li>
+<li><code>functional.suite.yml</code>文件配置</li>
+<li><code>unit.suite.yml</code>文件配置</li>
+</ol>
+<h3 id="建立测试数据库："><a class="header-anchor" href="#建立测试数据库：">¶</a>建立测试数据库：</h3>
+<ul>
+<li>测试数据库的配置在,<code>config/test_db.php</code>文件中：<code>$db['dsn'] = 'mysql:host=localhost;dbname=yii2_basic_tests';</code>；根据自己的情况，修改相应<code>host</code>,<code>dbname</code>即可；</li>
+<li>进入<code>test</code>目录，</li>
+<li>如果有<code>codeception</code>目录的话，需进入<code>codeception/bin/</code>目录；</li>
+<li>没有的话，直接进入<code>/bin</code>目录；</li>
+<li>这里有两个文件：<code>yii</code>和<code>yii.bat</code>。</li>
+<li>在这个目录下，执行数据库迁移命令。<code>php yii migrate/up</code></li>
+</ul>
+<p>有关数据库迁移，请看<a href="https://easy-yii.github.io/2016/12/06/migrations/">migrations</a></p>
+<h3 id="试一下命令"><a class="header-anchor" href="#试一下命令">¶</a>试一下命令</h3>
+<p>在创建的yii2-basic项目中，已经有一些预先框架自带的测试用例。我们尝试运行以下命令，看一下～</p>
+<p>在项目中执行，<code>php -S localhost:8080</code>，即可通过<code>http://localhost:8080/web/index.php</code>访问了～</p>
+<ul>
+<li><code>codecept build</code>,构建测试</li>
+<li><code>codecept run</code>，运行所有可以运行的测试代码</li>
+<li><code>codecept run acceptance</code>，运行验收测试的代码</li>
+<li><code>codecept run functional</code>，运行功能测试的代码</li>
+<li><code>codecept run unit</code>，运行单元测试的代码</li>
+</ul>
+<p>运行验收测试的时候，会报错～<code>Suite 'acceptance' could not be found</code>，因为没有找到验收测试。</p>
+<h3 id="写个单元测试-小试身手"><a class="header-anchor" href="#写个单元测试-小试身手">¶</a>写个单元测试，小试身手～</h3>
+<ol>
+<li>创建测试文件，以下命令皆可，声称<code>ExampleTest.php</code>文件：</li>
+</ol>
+<ul>
+<li><code>codecept generate:phpunit unit Example</code>
+或</li>
+<li><code>codecept generate:test unit Example</code></li>
+</ul>
+<p>使用<code>codecept generate:test unit Test</code>命令，创建的<code>Test.php</code>文件内容如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">extends</span> \<span class="title">Codeception</span>\<span class="title">Test</span>\<span class="title">Unit</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * <span class="doctag">@var</span> \UnitTester</div><div class="line">     */</div><div class="line">    <span class="keyword">protected</span> $tester;</div><div class="line"></div><div class="line">    <span class="comment">//预定义方法，可以在每个测试方法运行前创建一个测试对象</span></div><div class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">_before</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//预定义方法，可以在每个测试运行结束后销毁一个测试对象</span></div><div class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">_after</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// tests</span></div><div class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testMe</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用<code>codecept generate:phpunit unit Example</code>命令，创建的<code>ExampleTest.php</code>文件内容如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ExampleTest</span> <span class="keyword">extends</span> \<span class="title">PHPUnit_Framework_TestCase</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">setUp</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">tearDown</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// tests</span></div><div class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testMe</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>大家可以发现以下区别：
+<code>codecept generate:test unit Test</code>命令创建的文件：</p>
+<ul>
+<li>父类是<code>\Codeception\Test\Unit</code></li>
+<li>方法是<code>_before()</code> 和 <code>_after()</code></li>
+</ul>
+<p>而codecept generate:phpunit unit Example`命令创建的文件：</p>
+<ul>
+<li>父类是<code>\PHPUnit_Framework_TestCase</code>，这个是<code>PHPUnit</code>创建形式。</li>
+<li>方法是<code>setUp()</code>和 <code>tearDown()</code></li>
+</ul>
+<p><strong>在<code>codeception</code>中<code>_before()</code> 和 <code>_after()</code>取代了在<code>PHPUnit</code>中的<code>setUp()</code>和 <code>tearDown()</code>，
+事实上，<code>setUp()</code>和 <code>tearDown()</code>是在其继承的父类<code>\Codeception\Test\Unit</code>中已经完成了。</strong></p>
+<ol start="2">
+<li>运行单元测试，以下命令皆可</li>
+</ol>
+<ul>
+<li><code>codecept run unit ExampleTest</code>运行某一个测试文件
+或</li>
+<li><code>codecept run unit</code>运行所有的单元测试</li>
+</ul>
+<ol start="3">
+<li>传统的单元测试：</li>
+</ol>
+<p>在yii2中写一个传统的单元测试，相关的<code>model</code>部分，自己补充，这里不多说了，具体代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"><span class="keyword">namespace</span> <span class="title">tests</span>\<span class="title">unit</span>;</div><div class="line"></div><div class="line"><span class="keyword">use</span> <span class="title">app</span>\<span class="title">models</span>\<span class="title">User</span>;</div><div class="line"><span class="keyword">use</span> <span class="title">Codeception</span>\<span class="title">Specify</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">extends</span> \<span class="title">Codeception</span>\<span class="title">Test</span>\<span class="title">Unit</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">	<span class="keyword">use</span> <span class="title">Specify</span>;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * <span class="doctag">@var</span> \UnitTester</div><div class="line">     */</div><div class="line">    <span class="keyword">protected</span> $tester;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">_before</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">_after</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testValidation</span><span class="params">()</span> </span>&#123;</div><div class="line">		$user = <span class="keyword">new</span> User();</div><div class="line">		$user-&gt;username = <span class="keyword">null</span>;</div><div class="line">		<span class="keyword">$this</span>-&gt;assertFalse($user-&gt;validate([<span class="string">'username'</span>]));</div><div class="line"></div><div class="line">		$user-&gt;username = <span class="string">'toolooooongnaaaaaaameeeeeeeeeeeeeee'</span>;</div><div class="line">		<span class="keyword">$this</span>-&gt;assertFalse($user-&gt;validate([<span class="string">'username'</span>]));</div><div class="line">		</div><div class="line">		$user-&gt;username = <span class="string">'davert'</span>;</div><div class="line">		<span class="keyword">$this</span>-&gt;assertTrue($user-&gt;validate([<span class="string">'username'</span>]));</div><div class="line"></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol start="4">
+<li>测试数据库：</li>
+</ol>
+<p>在上面代码中，添加一个方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testSavingUser</span><span class="params">()</span> </span>&#123;</div><div class="line">		$user = <span class="keyword">new</span> User();</div><div class="line">		$user-&gt;setAttributes([<span class="string">'username'</span>=&gt;<span class="string">'username'</span>,<span class="string">'password'</span>=&gt;<span class="string">'password'</span>,<span class="string">'email'</span>=&gt;<span class="string">'yuan@qq.com'</span>]);</div><div class="line">		$user-&gt;save(<span class="keyword">false</span>);</div><div class="line">		<span class="keyword">$this</span>-&gt;assertEquals(<span class="string">'username'</span>,$user-&gt;getAttribute(<span class="string">'username'</span>));</div><div class="line">		<span class="keyword">$this</span>-&gt;tester-&gt;canSeeRecord(<span class="string">'app\models\User'</span>,<span class="keyword">array</span>(<span class="string">'username'</span>=&gt;<span class="string">'username'</span>,<span class="string">'password'</span>=&gt;<span class="string">'password'</span>,<span class="string">'email'</span>=&gt;<span class="string">'yuan@qq.com'</span>));</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+<p>如果执行失败，会在terminal中显示failure，这时说明创建用户数据有问题，要开发者自己检查相应的错误原因并改正。
+数据库数据，会在每次测试结束后填充和清除～</p>
+<p>一般情况下，我们是不能直接访问数据库的<code>ORM</code>的，这里为什么能访问呢？</p>
+<p>是因为，框架在单元测试配置文件中已经设置好了，单元测试的配置都在<code>unit.suite.yml</code>中，默认配置如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Codeception Test Suite Configuration</span></div><div class="line"></div><div class="line"><span class="comment"># suite for unit (internal) tests.</span></div><div class="line"><span class="comment"># RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.</span></div><div class="line"></div><div class="line">class_name: UnitTester</div><div class="line">modules:</div><div class="line">    enabled:</div><div class="line">      - Asserts</div><div class="line">      - Yii2:</div><div class="line">            part: [orm, email]  ＃此处配置了orm</div></pre></td></tr></table></figure>
+<p>除了<code>canSeeRecord()</code>方法，在Yii2中还有其他类似的方法，如下：</p>
+<ul>
+<li><code>seeRecord()</code></li>
+<li><code>dontSeeRecord()</code></li>
+<li><code>haveRecord()</code></li>
+</ul>
+<p>每个框架的配置略微不一样，具体想看<a href="http://codeception.com/docs/05-UnitTests" target="_blank" rel="external">官方文档单元测试－Interacting with the Framework部分</a></p>
+<ol start="5">
+<li>BBD规范测试</li>
+</ol>
+<p><code>BBD</code> 全称 <code>Behavior Driven Development</code>,中文翻译过来是行为驱动测试。前文我们也介绍过～</p>
+<p>在写测试的时候，当应功能需求发生变化，测试也要随时相应变化，所以测试随时准备好变化。
+所以测试代码要非常的易读和容易维护。如果在团队中没有记录测试的约定，那当功能发生变化或者引入新功能时，找到相应的测试代码就不容易了～
+所以我们不仅要测试代码覆盖整个应用程序，也要让测试代码可读性很强。
+因此，我们要引入一个独立的项目 <code>specify</code>用于单元测试的规范～</p>
+<p>我们将之前的代码修改下，引入<code>Codeception\Specify</code>,这个微小的库可以增加更多的可读性断言；
+然后使用<code>specify</code>方法，代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testValidation</span><span class="params">()</span> </span>&#123;</div><div class="line">		$user = <span class="keyword">new</span> User();</div><div class="line"></div><div class="line"></div><div class="line">		<span class="keyword">$this</span>-&gt;specify(<span class="string">'username is required'</span>,<span class="function"><span class="keyword">function</span><span class="params">()</span> <span class="title">use</span><span class="params">($user)</span> </span>&#123;</div><div class="line">			$user-&gt;username = <span class="keyword">null</span>;</div><div class="line">			<span class="keyword">$this</span>-&gt;assertFalse($user-&gt;validate([<span class="string">'username'</span>]));</div><div class="line">		&#125;);</div><div class="line"></div><div class="line">		<span class="keyword">$this</span>-&gt;specify(<span class="string">'username is too long'</span>,<span class="function"><span class="keyword">function</span><span class="params">()</span> <span class="title">use</span><span class="params">($user)</span> </span>&#123;</div><div class="line">			$user-&gt;username = <span class="string">'toolooooongnaaaaaaameeeeeeeeeeeeeee'</span>;</div><div class="line">			<span class="keyword">$this</span>-&gt;assertFalse($user-&gt;validate([<span class="string">'username'</span>]));</div><div class="line">		&#125;);</div><div class="line"></div><div class="line"></div><div class="line">		<span class="keyword">$this</span>-&gt;specify(<span class="string">'test true assert user'</span>,<span class="function"><span class="keyword">function</span><span class="params">()</span> <span class="title">use</span><span class="params">($user)</span> </span>&#123;</div><div class="line">			$user-&gt;username = <span class="string">'davert'</span>;</div><div class="line">			<span class="keyword">$this</span>-&gt;assertTrue($user-&gt;validate([<span class="string">'username'</span>]));</div><div class="line">		&#125;);</div><div class="line"></div><div class="line">	&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://github.com/Codeception/Specify" target="_blank" rel="external">specify(String $description,function closure)</a>
+<ul>
+<li>第一个参数<code>description</code>,是用于描述你要测试的场景。这样便于维护和阅读；</li>
+<li>第二个参数是一个匿名回调函数，是测试某场景的具体逻辑代码；</li>
+<li>每个<code>specify</code>里的代码都是相互独立的、不互相影响的；<code>specify</code>使用了<strong>深浅克隆策略</strong>来保存对象在每个作用域中保存对象。</li>
+<li>缺点是，在使用深克隆的时候会增加内存消耗，使用浅克隆的时候会不完全隔离；</li>
+</ul>
+</li>
+</ul>
+<ol start="6">
+<li>总结</li>
+</ol>
+<p>PHPUnit测试是测试套件中的一流的。每当需要编写和执行单元测试时，不需要单独安装PHPUnit，而是直接使用Codeception来执行它们。
+通过集成Codeception模块，可以将一些不错的功能添加到常规单元测试中。对于大多数单元和集成测试，PHPUnit测试就足够了。它们速度快，易于维护。</p>
+<p>这篇文章只能算<code>codeception</code>测试框架的初探，还有很多关于单元的东西没有讲太清楚～这个需要我花更多的时间去研究和探索～～
+当我深入研究有新发现的时候，会跟大家在这里分享的～</p>
+<h2 id="踩过的坑儿"><a class="header-anchor" href="#踩过的坑儿">¶</a>踩过的坑儿～～</h2>
+<p>1、如果已经执行过<code>codecept bootstrap</code>，再执行此命令，换出现如下情况：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bash:basic yuan$ codecept bootstrap</div><div class="line"></div><div class="line">Project is already initialized <span class="keyword">in</span> <span class="string">'.'</span></div></pre></td></tr></table></figure>
+<p>2、我执行<code>codecept build</code> 或 <code>codecept run</code>就会出现下面的报错情况。
+这是因为<strong>已经全局安装codeception 2.0，然后项目里安装了codeception 2.1＋。</strong>
+<strong>解决办法：</strong> 我用命令<code>composer remove codeception/codeception</code>把项目里的codeception移除之后，就正常了。
+<a href="https://github.com/yiisoft/yii2-codeception/issues/5" target="_blank" rel="external">我是在这里发现的，大家有兴趣也可以看看～～</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">bash:basic yuan$ codecept build</div><div class="line">Building Actor classes <span class="keyword">for</span> suites: functional, unit</div><div class="line">PHP Catchable fatal error:  Argument 1 passed to Codeception\Module::__construct() must be an instance of Codeception\Lib\ModuleContainer, array given, called <span class="keyword">in</span> /Users/yuan/.composer/vendor/codeception/codeception/src/Codeception/Configuration.php on line 327 and defined <span class="keyword">in</span> /Users/yuan/PhpstormProjects/basic/vendor/codeception/base/src/Codeception/Module.php on line 70</div><div class="line">PHP Stack trace:</div><div class="line">PHP   1. &#123;main&#125;() /Users/yuan/.composer/vendor/codeception/codeception/codecept:0</div><div class="line">PHP   2. Symfony\Component\Console\Application-&gt;run() /Users/yuan/.composer/vendor/codeception/codeception/codecept:27</div><div class="line">PHP   3. Symfony\Component\Console\Application-&gt;<span class="keyword">do</span>Run() /Users/yuan/.composer/vendor/symfony/console/Application.php:126</div><div class="line">PHP   4. Symfony\Component\Console\Application-&gt;<span class="keyword">do</span>RunCommand() /Users/yuan/.composer/vendor/symfony/console/Application.php:195</div><div class="line">PHP   5. Symfony\Component\Console\Command\Command-&gt;run() /Users/yuan/.composer/vendor/symfony/console/Application.php:878</div><div class="line">PHP   6. Codeception\Command\Build-&gt;execute() /Users/yuan/.composer/vendor/symfony/console/Command/Command.php:259</div><div class="line">PHP   7. Codeception\Command\Build-&gt;buildActorsForConfig() /Users/yuan/.composer/vendor/codeception/codeception/src/Codeception/Command/Build.php:46</div><div class="line">PHP   8. Codeception\Lib\Generator\Actor-&gt;__construct() /Users/yuan/.composer/vendor/codeception/codeception/src/Codeception/Command/Build.php:67</div><div class="line">PHP   9. Codeception\Configuration::modules() /Users/yuan/PhpstormProjects/basic/vendor/codeception/base/src/Codeception/Lib/Generator/Actor.php:44</div><div class="line">PHP  10. Codeception\Configuration::createModule() /Users/yuan/.composer/vendor/codeception/codeception/src/Codeception/Configuration.php:287</div><div class="line">PHP  11. Codeception\Module-&gt;__construct() /Users/yuan/.composer/vendor/codeception/codeception/src/Codeception/Configuration.php:327</div><div class="line"></div><div class="line">Catchable fatal error: Argument 1 passed to Codeception\Module::__construct() must be an instance of Codeception\Lib\ModuleContainer, array given, called <span class="keyword">in</span> /Users/yuan/.composer/vendor/codeception/codeception/src/Codeception/Configuration.php on line 327 and defined <span class="keyword">in</span> /Users/yuan/PhpstormProjects/basic/vendor/codeception/base/src/Codeception/Module.php on line 70</div><div class="line"></div><div class="line">Call Stack:</div><div class="line">    0.0002     238464   1. &#123;main&#125;() /Users/yuan/.composer/vendor/codeception/codeception/codecept:0</div><div class="line">    0.0171    2700328   2. Symfony\Component\Console\Application-&gt;run() /Users/yuan/.composer/vendor/codeception/codeception/codecept:27</div><div class="line">    0.0198    3058600   3. Symfony\Component\Console\Application-&gt;<span class="keyword">do</span>Run() /Users/yuan/.composer/vendor/symfony/console/Application.php:126</div><div class="line">    0.0200    3059520   4. Symfony\Component\Console\Application-&gt;<span class="keyword">do</span>RunCommand() /Users/yuan/.composer/vendor/symfony/console/Application.php:195</div><div class="line">    0.0200    3060024   5. Symfony\Component\Console\Command\Command-&gt;run() /Users/yuan/.composer/vendor/symfony/console/Application.php:878</div><div class="line">    0.0202    3063904   6. Codeception\Command\Build-&gt;execute() /Users/yuan/.composer/vendor/symfony/console/Command/Command.php:259</div><div class="line">    0.0202    3064536   7. Codeception\Command\Build-&gt;buildActorsForConfig() /Users/yuan/.composer/vendor/codeception/codeception/src/Codeception/Command/Build.php:46</div><div class="line">    0.0363    4901592   8. Codeception\Lib\Generator\Actor-&gt;__construct() /Users/yuan/.composer/vendor/codeception/codeception/src/Codeception/Command/Build.php:67</div><div class="line">    0.0372    5024000   9. Codeception\Configuration::modules() /Users/yuan/PhpstormProjects/basic/vendor/codeception/base/src/Codeception/Lib/Generator/Actor.php:44</div><div class="line">    0.0372    5024720  10. Codeception\Configuration::createModule() /Users/yuan/.composer/vendor/codeception/codeception/src/Codeception/Configuration.php:287</div><div class="line">    0.0382    5226888  11. Codeception\Module-&gt;__construct() /Users/yuan/.composer/vendor/codeception/codeception/src/Codeception/Configuration.php:327</div></pre></td></tr></table></figure>
+<p>如果大家有什么问题，或者本文有错误，或者有什么好资源共享，欢迎在留言或者<a href="https://github.com/easy-yii/easy-yii.github.io/issues/1" target="_blank" rel="external">在这里提issue</a></p>
+<p>参考文章：</p>
+<ul>
+<li><a href="http://pjokumsen.co.za/category/yii2/" target="_blank" rel="external">一个系列，yii2-codeception，主要是作者的心得，算不上教程</a></li>
+<li><a href="https://code.tutsplus.com/tutorials/programming-with-yii2-automated-testing-with-codeception--cms-26790" target="_blank" rel="external">Programming With Yii2: Automated Testing With Codeception</a></li>
+<li><a href="http://codeception.com/for/yii" target="_blank" rel="external">codeception for yii2</a></li>
+<li><a href="http://codeception.com/docs/05-UnitTests" target="_blank" rel="external">codeception文档－unit</a></li>
+<li><a href="http://www.yiichina.com/doc/guide/2.0/test-overview" target="_blank" rel="external">Yii2文档－测试部分</a></li>
+</ul>
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">留言</h1> -->
+
+  
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-unit-test" data-title="测试 yii2-codeception(1)－－单元测试" data-url="http://easy-yii.github.io/2017/01/12/unit-test/"></div>
+    <!-- 多说评论框 end -->
+  
+</section>
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+      
+        <div class="nav-next">
+          <a href="/2017/01/09/know-PartFive/" rel="prev">下一页 <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- Footer-widgets -->
+<div class="footer-widgets">
+	<div class="row inside-wrapper">
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">关于本站</h1>
+
+				<div class="custom-widget-content">
+					
+					<p align="left">一步一个脚印，细致地学习Yii2，从实践到阅读源码。</p>
+				</div>
+			</aside>
+		</div>
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">与我联系</h1>
+
+				<div class="widget-text">
+					
+					
+					<a href="https://github.com/YuanLianDu" class="icon icon-github" target="_blank">github</a>
+					
+					<a href="mailto:yuanliandu@qq.com" class="icon icon-mail" target="_blank">mail</a>
+					
+					
+				</div>
+			</aside>
+		</div>
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">站内搜索</h1>
+
+				<div class="widget-text">
+					<form onSubmit="return appDaily.submitSearch('')">
+						<p>
+							<input type="text" placeholder="search..." id="homeSearchInput">
+						</p>
+						<!--<input type="submit" value="GO">-->
+					</form>
+				</div>
+			</aside>
+		</div>
+		<div style="margin-right: 220px">
+			<span id="busuanzi_container_site_pv">
+				本站总访问量<span id="busuanzi_value_site_pv"></span>次
+			</span>
+			<span id="busuanzi_container_site_uv">
+                本站访客数<span id="busuanzi_value_site_uv"></span>人次
+			</span>
+		</div>
+	</div>
+</div>
+
+
+<!-- Footer -->
+<footer class="site-info">
+	<p>
+		<span>hacking-with-yii2 &copy; 2017</span>
+		
+		<span class="split">|</span><span>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a></span>
+		
+	</p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+<script src="/js/app.js"></script>
+
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'easy-yii'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+
+
+
+</body>
+
+</html>
