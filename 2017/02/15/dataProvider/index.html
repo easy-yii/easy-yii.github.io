@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<!-- Head tag -->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="hacking-with-yii2">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="缘莲度">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="dataProvider"/>
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="hacking-with-yii2" />
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="hacking-with-yii2"/>
+  <!--Type page-->
+  
+      <meta property="og:type" content="article" />
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>dataProvider - hacking-with-yii2</title>
+
+
+  <link rel="shortcut icon" href="https://static.hinpc.com/image/2016/20160807-hi-logo.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+        <img src="https://avatars3.githubusercontent.com/u/23000895?v=3&s=200" alt="hacking-with-yii2" height="60">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            dataProvider
+            
+          </h1>
+          <p class="posted-on">
+          2017-02-15
+          </p>
+          <div class="tags-links">
+            
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content">
+          <p><code>dataProvider</code>类，封装了排序(sort)和分页(pagination)功能；</p>
+<p>1、正常使用：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> <span class="title">yii</span>\<span class="title">data</span>\<span class="title">ActiveDataProvider</span>;</div><div class="line"></div><div class="line">$query = Post::find()-&gt;where([<span class="string">'status'</span> =&gt; <span class="number">1</span>]);</div><div class="line">$provider = <span class="keyword">new</span> ActiveDataProvider([</div><div class="line">    <span class="string">'query'</span> =&gt; $query, <span class="comment">// 或 $query-&gt;asArray()</span></div><div class="line">    <span class="string">'pagination'</span> =&gt; [</div><div class="line">        <span class="string">'pageSize'</span> =&gt; <span class="number">10</span>,</div><div class="line">    ],</div><div class="line">    <span class="string">'sort'</span> =&gt; [</div><div class="line">        <span class="string">'defaultOrder'</span> =&gt; [</div><div class="line">            <span class="string">'created_at'</span> =&gt; SORT_DESC,</div><div class="line">            <span class="string">'title'</span> =&gt; SORT_ASC, </div><div class="line">        ]</div><div class="line">    ],</div><div class="line">]);</div><div class="line"></div><div class="line"><span class="comment">// returns an array of Post objects</span></div><div class="line">$posts = $provider-&gt;getModels();</div><div class="line">$totalCount = $provider-&gt;totalCount</div></pre></td></tr></table></figure>
+<p>2、联表查询，并联表排序</p>
+<p>post model:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">//建立关联关系</span></div><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getAuthor</span><span class="params">()</span> </span>&#123;</div><div class="line">    reutrn <span class="keyword">$this</span>-&gt;hasOne(Article::className(),[<span class="string">'id'</span> =&gt; <span class="string">'author_id])</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">$query = Post::find()</div><div class="line">    -&gt;joinWith('author<span class="string">',true,'</span>RIGHT JOIN<span class="string">')</span></div><div class="line">    -&gt;where(['status<span class="string">' =&gt; 1]);</span></div><div class="line"></div><div class="line">$provider = new ActiveDataProvider([</div><div class="line">    'query<span class="string">' =&gt; $query, // 或 $query-&gt;asArray()</span></div><div class="line">    'pagination<span class="string">' =&gt; [</span></div><div class="line">        'pageSize<span class="string">' =&gt; 10,</span></div><div class="line">    ],</div><div class="line">    'sort<span class="string">' =&gt; [</span></div><div class="line">        'defaultOrder<span class="string">' =&gt; [</span></div><div class="line">            'created_at<span class="string">' =&gt; SORT_DESC,</span></div><div class="line">            'title<span class="string">' =&gt; SORT_ASC, </span></div><div class="line">        ],</div><div class="line">        'attributes<span class="string">' =&gt; [</span></div><div class="line">            'article_type<span class="string">' =&gt; [</span></div><div class="line">                	'asc<span class="string">' =&gt; ['</span>article.type<span class="string">' =&gt; SORT_ASC],</span></div><div class="line">                    'desc<span class="string">' =&gt; ['</span>article.type<span class="string">' =&gt; SORT_DESC]</span></div><div class="line">            ]  </div><div class="line">        ],</div><div class="line">    ],</div><div class="line">]);</div></pre></td></tr></table></figure>
+<ul>
+<li>当author表和post表都有type时，指明表名，如 <code>article.type</code></li>
+<li>事实上，当使用<code>ActiveDataProvider</code>时，<code>post</code>表中的每个字段都是可以用来排序的</li>
+</ul>
+<p>3、禁用分页:<code>$provider-&gt;setPagination(false);</code></p>
+<p>4、禁用排序：<code>$provider-&gt;setSort(false);</code></p>
+<h2 id="排序yii-data-sort"><a class="header-anchor" href="#排序yii-data-sort">¶</a>排序<a href="http://www.yiiframework.com/doc-2.0/yii-data-sort.html" target="_blank" rel="external">yii\data\Sort </a></h2>
+<p>1、单一排序：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$sort = <span class="keyword">new</span> Sort([</div><div class="line">			<span class="string">'defaultOrder'</span> =&gt; [<span class="string">'id'</span> =&gt; SORT_DESC,],</div><div class="line">			<span class="string">'attributes'</span> =&gt; [</div><div class="line">				<span class="string">'id'</span>   <span class="comment">//这里必填相应的排序字段，否则，报错，如：Undefined index: id</span></div><div class="line">			]</div><div class="line">		]);</div><div class="line"></div><div class="line">		$data = TradeRecord::find()-&gt;orderBy($sort-&gt;orders)-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure>
+<p>2、混合排序:</p>
+<p>主要根据bill_id排序；如果bill_id相同，再根据id排序；</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$sort = <span class="keyword">new</span> Sort([</div><div class="line">			<span class="string">'defaultOrder'</span> =&gt; [<span class="string">'id'</span> =&gt; SORT_DESC,],</div><div class="line">			<span class="string">'attributes'</span> =&gt; [</div><div class="line">				<span class="string">'id'</span> =&gt; [</div><div class="line">					<span class="string">'asc'</span> =&gt; [<span class="string">'bill_id'</span> =&gt; SORT_ASC,<span class="string">'id'</span> =&gt;SORT_ASC],</div><div class="line">					<span class="string">'desc'</span> =&gt; [<span class="string">'bill_id'</span> =&gt; SORT_DESC,<span class="string">'id'</span> =&gt; SORT_DESC],</div><div class="line">					<span class="string">'default'</span> =&gt; SORT_DESC,<span class="comment">//默认排序方式</span></div><div class="line">					<span class="string">'label'</span> =&gt; <span class="string">'id'</span> <span class="comment">//是在调用link()创建排序链接时，是用的标签</span></div><div class="line">				],</div><div class="line">			]</div><div class="line">		]);</div><div class="line"></div><div class="line">		$data = TradeRecord::find()-&gt;orderBy($sort-&gt;orders)-&gt;asArray()-&gt;all();</div></pre></td></tr></table></figure>
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">留言</h1> -->
+
+  
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-dataProvider" data-title="dataProvider" data-url="http://easy-yii.github.io/2017/02/15/dataProvider/"></div>
+    <!-- 多说评论框 end -->
+  
+</section>
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+      
+        <div class="nav-next">
+          <a href="/2017/01/12/unit-test/" rel="prev">下一页 <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- Footer-widgets -->
+<div class="footer-widgets">
+	<div class="row inside-wrapper">
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">关于本站</h1>
+
+				<div class="custom-widget-content">
+					
+					<p align="left">一步一个脚印，细致地学习Yii2，从实践到阅读源码。</p>
+				</div>
+			</aside>
+		</div>
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">与我联系</h1>
+
+				<div class="widget-text">
+					
+					
+					<a href="https://github.com/YuanLianDu" class="icon icon-github" target="_blank">github</a>
+					
+					<a href="mailto:yuanliandu@qq.com" class="icon icon-mail" target="_blank">mail</a>
+					
+					
+				</div>
+			</aside>
+		</div>
+		<div class="col-1-3">
+			<aside>
+				<h1 class="widget-title">站内搜索</h1>
+
+				<div class="widget-text">
+					<form onSubmit="return appDaily.submitSearch('')">
+						<p>
+							<input type="text" placeholder="search..." id="homeSearchInput">
+						</p>
+						<!--<input type="submit" value="GO">-->
+					</form>
+				</div>
+			</aside>
+		</div>
+		<div style="margin-right: 220px">
+			<span id="busuanzi_container_site_pv">
+				本站总访问量<span id="busuanzi_value_site_pv"></span>次
+			</span>
+			<span id="busuanzi_container_site_uv">
+                本站访客数<span id="busuanzi_value_site_uv"></span>人次
+			</span>
+		</div>
+	</div>
+</div>
+
+
+<!-- Footer -->
+<footer class="site-info">
+	<p>
+		<span>hacking-with-yii2 &copy; 2017</span>
+		
+		<span class="split">|</span><span>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a></span>
+		
+	</p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+<script src="/js/app.js"></script>
+
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'easy-yii'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+
+
+
+</body>
+
+</html>
